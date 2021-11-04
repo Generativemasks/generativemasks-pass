@@ -103,6 +103,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "GM_SUPPLY_AMOUNT",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "MAX_GM_TOKEN_ID",
     outputs: [
       {
@@ -216,6 +229,25 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "maskNumbers",
+        type: "uint256[]",
+      },
+    ],
+    name: "getTokenIdListFromMaskNumbers",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "gm",
     outputs: [
@@ -295,11 +327,37 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "maskNumber",
+        type: "uint256",
+      },
+    ],
+    name: "mintWithGMMaskNumber",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "tokenId",
         type: "uint256",
       },
     ],
-    name: "mintWithGM",
+    name: "mintWithGMTokenId",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "maskNumbers",
+        type: "uint256[]",
+      },
+    ],
+    name: "multiMintWithGMMaskNumbers",
     outputs: [],
     stateMutability: "payable",
     type: "function",
@@ -312,7 +370,7 @@ const _abi = [
         type: "uint256[]",
       },
     ],
-    name: "multiMintWithGM",
+    name: "multiMintWithGMTokenIds",
     outputs: [],
     stateMutability: "payable",
     type: "function",

@@ -22,6 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
   functions: {
+    "GM_SUPPLY_AMOUNT()": FunctionFragment;
     "MAX_GM_TOKEN_ID()": FunctionFragment;
     "MAX_MULTI_MINT_AMOUNT()": FunctionFragment;
     "METADATA_INDEX()": FunctionFragment;
@@ -30,13 +31,16 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "derivedFrom()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
+    "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
     "gm()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokenId()": FunctionFragment;
     "maxTotalSupply()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
-    "mintWithGM(uint256)": FunctionFragment;
-    "multiMintWithGM(uint256[])": FunctionFragment;
+    "mintWithGMMaskNumber(uint256)": FunctionFragment;
+    "mintWithGMTokenId(uint256)": FunctionFragment;
+    "multiMintWithGMMaskNumbers(uint256[])": FunctionFragment;
+    "multiMintWithGMTokenIds(uint256[])": FunctionFragment;
     "nHoldersMintsAvailable()": FunctionFragment;
     "name()": FunctionFragment;
     "onlyGMHolders()": FunctionFragment;
@@ -62,6 +66,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "withdrawAll()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "GM_SUPPLY_AMOUNT",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "MAX_GM_TOKEN_ID",
     values?: undefined
@@ -91,6 +99,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     functionFragment: "getTokenIdFromMaskNumber",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenIdListFromMaskNumbers",
+    values: [BigNumberish[]]
+  ): string;
   encodeFunctionData(functionFragment: "gm", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -106,11 +118,19 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "mintWithGM",
+    functionFragment: "mintWithGMMaskNumber",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "multiMintWithGM",
+    functionFragment: "mintWithGMTokenId",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multiMintWithGMMaskNumbers",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multiMintWithGMTokenIds",
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
@@ -198,6 +218,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "GM_SUPPLY_AMOUNT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "MAX_GM_TOKEN_ID",
     data: BytesLike
   ): Result;
@@ -223,6 +247,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     functionFragment: "getTokenIdFromMaskNumber",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenIdListFromMaskNumbers",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gm", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -234,9 +262,20 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mintWithGM", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "multiMintWithGM",
+    functionFragment: "mintWithGMMaskNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "mintWithGMTokenId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "multiMintWithGMMaskNumbers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "multiMintWithGMTokenIds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -374,6 +413,8 @@ export class GenerativemasksDerivative extends BaseContract {
   interface: GenerativemasksDerivativeInterface;
 
   functions: {
+    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -400,6 +441,11 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getTokenIdListFromMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
     gm(overrides?: CallOverrides): Promise<[string]>;
 
     isApprovedForAll(
@@ -417,12 +463,22 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    mintWithGM(
+    mintWithGMMaskNumber(
+      maskNumber: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    mintWithGMTokenId(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    multiMintWithGM(
+    multiMintWithGMMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    multiMintWithGMTokenIds(
       tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -522,6 +578,8 @@ export class GenerativemasksDerivative extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+
   MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
@@ -548,6 +606,11 @@ export class GenerativemasksDerivative extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getTokenIdListFromMaskNumbers(
+    maskNumbers: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
   gm(overrides?: CallOverrides): Promise<string>;
 
   isApprovedForAll(
@@ -565,12 +628,22 @@ export class GenerativemasksDerivative extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  mintWithGM(
+  mintWithGMMaskNumber(
+    maskNumber: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  mintWithGMTokenId(
     tokenId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  multiMintWithGM(
+  multiMintWithGMMaskNumbers(
+    maskNumbers: BigNumberish[],
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  multiMintWithGMTokenIds(
     tokenIds: BigNumberish[],
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -664,6 +737,8 @@ export class GenerativemasksDerivative extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
@@ -690,6 +765,11 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTokenIdListFromMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
     gm(overrides?: CallOverrides): Promise<string>;
 
     isApprovedForAll(
@@ -704,9 +784,22 @@ export class GenerativemasksDerivative extends BaseContract {
 
     mint(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    mintWithGM(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    mintWithGMMaskNumber(
+      maskNumber: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    multiMintWithGM(
+    mintWithGMTokenId(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    multiMintWithGMMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    multiMintWithGMTokenIds(
       tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
@@ -831,6 +924,8 @@ export class GenerativemasksDerivative extends BaseContract {
   };
 
   estimateGas: {
+    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
@@ -857,6 +952,11 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTokenIdListFromMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     gm(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -874,12 +974,22 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    mintWithGM(
+    mintWithGMMaskNumber(
+      maskNumber: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    mintWithGMTokenId(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    multiMintWithGM(
+    multiMintWithGMMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    multiMintWithGMTokenIds(
       tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -980,6 +1090,8 @@ export class GenerativemasksDerivative extends BaseContract {
   };
 
   populateTransaction: {
+    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MAX_MULTI_MINT_AMOUNT(
@@ -1011,6 +1123,11 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTokenIdListFromMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     gm(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
@@ -1028,12 +1145,22 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    mintWithGM(
+    mintWithGMMaskNumber(
+      maskNumber: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintWithGMTokenId(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    multiMintWithGM(
+    multiMintWithGMMaskNumbers(
+      maskNumbers: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    multiMintWithGMTokenIds(
       tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
