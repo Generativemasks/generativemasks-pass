@@ -2,8 +2,6 @@
 pragma solidity 0.8.6;
 
 import "./GMPassCore.sol";
-import "../interfaces/IN.sol";
-import "../interfaces/iGM.sol";
 
 /**
  * @title GMPass contract
@@ -36,8 +34,7 @@ abstract contract GMPass is GMPassCore {
         GMPassCore(
             name,
             symbol,
-            IN(0x05a46f1E545526FB803FF974C790aCeA34D1f2D6),
-            // iGM(0x80416304142Fa37929f8A4Eee83eE7D2dAc12D7c),
+            IERC721(0x80416304142Fa37929f8A4Eee83eE7D2dAc12D7c),
             onlyGMHolders,
             maxTotalSupply,
             reservedAllowance,

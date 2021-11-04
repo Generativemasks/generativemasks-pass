@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "../interfaces/IN.sol";
-import "../interfaces/iGM.sol";
 
 /**
  * @title GMPassCore contract
@@ -19,8 +18,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     uint256 public constant MAX_GM_TOKEN_ID = 9999;
     uint256 public constant METADATA_INDEX = 3799;
 
-    IN public immutable gm;
-    // iGM public immutable gm;
+    IERC721 public immutable gm;
     bool public immutable onlyGMHolders;
     uint16 public immutable reservedAllowance;
     uint16 public reserveMinted;
@@ -42,8 +40,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     constructor(
         string memory name,
         string memory symbol,
-        IN gm_,
-        // iGM gm_,
+        IERC721 gm_,
         bool onlyGMHolders_,
         uint256 maxTotalSupply_,
         uint16 reservedAllowance_,

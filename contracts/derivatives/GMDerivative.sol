@@ -3,8 +3,6 @@ pragma solidity 0.8.6;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "../interfaces/IN.sol";
-import "../interfaces/iGM.sol";
 import "../core/GMPassCore.sol";
 
 /**
@@ -24,7 +22,7 @@ contract GenerativemasksDerivative is GMPassCore {
         address _generativemasks,
         address _derivedFrom
     )
-    GMPassCore(name, symbol, IN(_generativemasks), true, 10000, 10000, 0, 0)
+    GMPassCore(name, symbol, IERC721(_generativemasks), true, 10000, 10000, 0, 0)
         // GMPassCore(name, symbol, iGM(_generativemasks), true, 10000, 10000, 0, 0)
     {
         __baseURI = baseURI;

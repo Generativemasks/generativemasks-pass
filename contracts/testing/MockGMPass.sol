@@ -2,15 +2,12 @@
 pragma solidity >=0.8.4;
 
 import "../core/GMPassCore.sol";
-import "../interfaces/IN.sol";
-import "../interfaces/iGM.sol";
 
 contract MockGMPass is GMPassCore {
     constructor(
         string memory name,
         string memory symbol,
-        IN gm,
-        // iGM gm,
+        IERC721 gm,
         bool onlyNHolders,
         uint256 maxTotalSupply,
         uint16 reservedAllowance,
