@@ -1,11 +1,11 @@
 import { deployments, getNamedAccounts, getUnnamedAccounts } from "hardhat";
-import { N } from "../../typechain/N";
-import { GMPass } from "../../typechain";
+import { ERC721Mock } from "../../typechain";
+import { ERC721, GMPass } from "../../typechain";
 import { ETH } from "../../utils/utils";
 import { setupUser, setupUsers } from "./users";
 
 export interface Contracts {
-  N: N;
+  NFT: ERC721Mock;
   GMDerivative: GMPass;
   GMDerivativeRestricted: GMPass;
   GMDerivativeWithAllowance: GMPass;
@@ -19,8 +19,8 @@ export interface User extends Contracts {
 export const setupIntegration = deployments.createFixture(async ({ ethers }) => {
   const { deployer } = await getNamedAccounts();
 
-  const nContractFactory = await ethers.getContractFactory("N");
-  const nContract = (await nContractFactory.deploy()) as N;
+  const nContractFactory = await ethers.getContractFactory("ERC721Mock");
+  const nContract = (await nContractFactory.deploy()) as ERC721Mock;
   const nAddress = nContract.address;
 
   const nPassFactory = await ethers.getContractFactory("MockGMPass");
@@ -43,7 +43,7 @@ export const setupIntegration = deployments.createFixture(async ({ ethers }) => 
     GMDerivativeRestricted: nDerivativeRestricted,
     GMDerivativeWithAllowance: nDerivativeWithAllowance,
     GMDerivativeWithPrice: nDerivativeWithPrice,
-    N: nContract,
+    NFT: nContract,
   };
   const users: User[] = await setupUsers(await getUnnamedAccounts(), contracts);
 

@@ -19,21 +19,21 @@ describe("GMPass", function () {
   describe("Construction", async function () {
     it("reverts on supply = 0", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(nPassFactory.deploy("ND", "ND", contracts.N.address, true, 0, 0, 0, 0)).to.be.revertedWith(
+      await expect(nPassFactory.deploy("ND", "ND", contracts.NFT.address, true, 0, 0, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_SUPPLY",
       );
     });
 
     it("reverts on restricted minting with total supply > n supply", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(nPassFactory.deploy("ND", "ND", contracts.N.address, true, 10000, 0, 0, 0)).to.be.revertedWith(
+      await expect(nPassFactory.deploy("ND", "ND", contracts.NFT.address, true, 10000, 0, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_SUPPLY",
       );
     });
 
     it("reverts on minting with total supply < allowance", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(nPassFactory.deploy("ND", "ND", contracts.N.address, true, 100, 101, 0, 0)).to.be.revertedWith(
+      await expect(nPassFactory.deploy("ND", "ND", contracts.NFT.address, true, 100, 101, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_ALLOWANCE",
       );
     });
@@ -41,15 +41,15 @@ describe("GMPass", function () {
 
   describe("Unrestricted", async function () {
     it("allows only n owner to call mintWithGM", async function () {
-      await users[0].N.claim(2);
-      expect(await contracts.N.ownerOf(2)).to.be.equals(users[0].address);
+      await users[0].NFT.claim(2);
+      expect(await contracts.NFT.ownerOf(2)).to.be.equals(users[0].address);
       await expect(deployer.GMDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:INVALID_OWNER");
       await users[0].GMDerivative.mintWithGMTokenId(2);
       expect(await contracts.GMDerivative.ownerOf(2)).to.be.equals(users[0].address);
     });
 
     it("forbids non n holder to mint inside n token ids range", async function () {
-      await users[0].N.claim(8888);
+      await users[0].NFT.claim(8888);
       await expect(deployer.GMDerivative.mint(8888)).to.be.revertedWith("GMPass:INVALID_ID");
     });
 
@@ -61,7 +61,7 @@ describe("GMPass", function () {
 
   describe("Restricted", async function () {
     it("does not allow anyone to mint inside n token ids range with unrestricted pass", async function () {
-      await users[0].N.claim(1000);
+      await users[0].NFT.claim(1000);
       // Different user trying to mint
       await expect(deployer.GMDerivativeRestricted.mint(1000)).to.be.revertedWith("GMPass:OPEN_MINTING_DISABLED");
     });
@@ -73,8 +73,8 @@ describe("GMPass", function () {
 
   describe("With Allowance", async function () {
     it("allows n minting when allowance available", async function () {
-      await deployer.N.claim(2);
-      expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
+      await deployer.NFT.claim(2);
+      expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
       await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(2);
       expect(await contracts.GMDerivativeWithAllowance.ownerOf(2)).to.be.equals(deployer.address);
     });
@@ -88,8 +88,8 @@ describe("GMPass", function () {
       const allowance = await contracts.GMDerivativeWithAllowance.reservedAllowance();
       for (let i = 0; i < allowance; i++) {
         const tokenId = i + 1;
-        await deployer.N.claim(tokenId);
-        expect(await contracts.N.ownerOf(tokenId)).to.be.equals(deployer.address);
+        await deployer.NFT.claim(tokenId);
+        expect(await contracts.NFT.ownerOf(tokenId)).to.be.equals(deployer.address);
         await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
         expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
@@ -119,12 +119,12 @@ describe("GMPass", function () {
       const openMints = maxTotalSupply - allowance;
       for (let i = 0; i < openMints; i++) {
         const tokenId = i + 1;
-        await deployer.N.claim(tokenId);
-        expect(await contracts.N.ownerOf(tokenId)).to.be.equals(deployer.address);
+        await deployer.NFT.claim(tokenId);
+        expect(await contracts.NFT.ownerOf(tokenId)).to.be.equals(deployer.address);
         await deployer.GMDerivativeWithAllowance.mint(tokenId);
         expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
-      await deployer.N.claim(openMints + 1);
+      await deployer.NFT.claim(openMints + 1);
       await expect(deployer.GMDerivativeWithAllowance.mint(openMints + 1)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
@@ -136,7 +136,7 @@ describe("GMPass", function () {
       const openMints = maxTotalSupply - allowance;
       for (let i = 0; i < allowance; i++) {
         const tokenId = i + 1;
-        await deployer.N.claim(tokenId);
+        await deployer.NFT.claim(tokenId);
         await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
       }
       for (let i = 0; i < openMints; i++) {
@@ -154,15 +154,15 @@ describe("GMPass", function () {
 
     it("forbids open minting when total supply=1 and allowance=1", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.N.address, false, 1, 1, 0, 0)) as GMPass;
+      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.NFT.address, false, 1, 1, 0, 0)) as GMPass;
       await expect(nDerivative.mint(10000)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
     });
 
     it("allows n minting when total supply=1 and allowance=1", async function () {
-      await deployer.N.claim(1);
-      await deployer.N.claim(2);
+      await deployer.NFT.claim(1);
+      await deployer.NFT.claim(2);
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.N.address, false, 1, 1, 0, 0)) as GMPass;
+      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.NFT.address, false, 1, 1, 0, 0)) as GMPass;
       await nDerivative.mintWithGMTokenId(1);
       expect(await nDerivative.ownerOf(1)).to.be.equals(deployer.address);
       await expect(nDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
@@ -170,7 +170,7 @@ describe("GMPass", function () {
 
     it("allows open minting when total supply=1 and allowance=0", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.N.address, false, 1, 0, 0, 0)) as GMPass;
+      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.NFT.address, false, 1, 0, 0, 0)) as GMPass;
       await nDerivative.mint(10000);
       expect(await nDerivative.ownerOf(10000)).to.be.equals(deployer.address);
     });
@@ -181,7 +181,7 @@ describe("GMPass", function () {
       const nDerivative = (await nPassFactory.deploy(
         "ND",
         "ND",
-        contracts.N.address,
+        contracts.NFT.address,
         false,
         totalSupply,
         0,
@@ -200,7 +200,7 @@ describe("GMPass", function () {
 
   describe("Price", async function () {
     it("requires n token holder to pay correct amount", async function () {
-      await deployer.N.claim(1000);
+      await deployer.NFT.claim(1000);
       const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
       await expect(deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.sub(1) })).to.be.revertedWith(
         "GMPass:INVALID_PRICE",
@@ -243,12 +243,12 @@ describe("GMPass", function () {
 
   describe("Multi mint", async function () {
     it("allows to mint multiple owned tokens", async function () {
-      await deployer.N.claim(1);
-      await deployer.N.claim(2);
-      await deployer.N.claim(3);
-      expect(await contracts.N.ownerOf(1)).to.be.equals(deployer.address);
-      expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
-      expect(await contracts.N.ownerOf(3)).to.be.equals(deployer.address);
+      await deployer.NFT.claim(1);
+      await deployer.NFT.claim(2);
+      await deployer.NFT.claim(3);
+      expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
+      expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
+      expect(await contracts.NFT.ownerOf(3)).to.be.equals(deployer.address);
       await deployer.GMDerivative.multiMintWithGMTokenIds([1, 2, 3]);
       expect(await contracts.GMDerivative.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.GMDerivative.ownerOf(2)).to.be.equals(deployer.address);
@@ -256,12 +256,12 @@ describe("GMPass", function () {
     });
 
     it("allows to mint multiple owned tokens with price", async function () {
-      await deployer.N.claim(1);
-      await deployer.N.claim(2);
-      await deployer.N.claim(3);
-      expect(await contracts.N.ownerOf(1)).to.be.equals(deployer.address);
-      expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
-      expect(await contracts.N.ownerOf(3)).to.be.equals(deployer.address);
+      await deployer.NFT.claim(1);
+      await deployer.NFT.claim(2);
+      await deployer.NFT.claim(3);
+      expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
+      expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
+      expect(await contracts.NFT.ownerOf(3)).to.be.equals(deployer.address);
       const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
       await deployer.GMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3], { value: price.mul(3) });
       expect(await contracts.GMDerivativeWithPrice.ownerOf(1)).to.be.equals(deployer.address);
@@ -270,11 +270,11 @@ describe("GMPass", function () {
     });
 
     it("reverts multi mint if one token not owned", async function () {
-      await deployer.N.claim(1);
-      await deployer.N.claim(2);
-      await users[0].N.claim(3);
-      expect(await contracts.N.ownerOf(1)).to.be.equals(deployer.address);
-      expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
+      await deployer.NFT.claim(1);
+      await deployer.NFT.claim(2);
+      await users[0].NFT.claim(3);
+      expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
+      expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
       await expect(deployer.GMDerivative.multiMintWithGMTokenIds([1, 2, 3])).to.be.revertedWith("GMPass:INVALID_OWNER");
     });
 
