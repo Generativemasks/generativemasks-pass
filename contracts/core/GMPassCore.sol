@@ -15,6 +15,7 @@ import "../interfaces/iGM.sol";
  */
 abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     uint256 public constant MAX_MULTI_MINT_AMOUNT = 32;
+    uint256 public constant GM_SUPPLY_AMOUNT = 10000;
     uint256 public constant MAX_GM_TOKEN_ID = 9999;
     uint256 public constant METADATA_INDEX = 3799;
 
@@ -60,9 +61,12 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         priceForNHoldersInWei = priceForNHoldersInWei_;
         priceForOpenMintInWei = priceForOpenMintInWei_;
     }
-
+    
     function getTokenIdFromMaskNumber(uint256 maskNumber) public pure returns(uint256) {
-        return ((maskNumber + 10000) - METADATA_INDEX) % 10000;
+        require(maskNumber <= MAX_GM_TOKEN_ID, "Invalid mask number");
+        return ((maskNumber + GM_SUPPLY_AMOUNT) - METADATA_INDEX) % GM_SUPPLY_AMOUNT;
+    }
+    
     }
 
     /**
