@@ -15,8 +15,7 @@ import "../interfaces/iGM.sol";
  */
 abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     uint256 public constant MAX_MULTI_MINT_AMOUNT = 32;
-    uint256 public constant MAX_GM_TOKEN_ID = 8888;
-    // uint256 public constant MAX_GM_TOKEN_ID = 10000;
+    uint256 public constant MAX_GM_TOKEN_ID = 9999;
     uint256 public constant METADATA_INDEX = 3799;
 
     IN public immutable gm;

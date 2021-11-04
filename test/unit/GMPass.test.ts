@@ -53,8 +53,8 @@ describe("GMPass", function () {
     });
 
     it("allows anyone to mint out of n token ids range with unrestricted pass", async function () {
-      await deployer.GMDerivative.mint(9999);
-      expect(await contracts.GMDerivative.ownerOf(9999)).to.be.equals(deployer.address);
+      await deployer.GMDerivative.mint(10000);
+      expect(await contracts.GMDerivative.ownerOf(10000)).to.be.equals(deployer.address);
     });
   });
 
@@ -79,8 +79,8 @@ describe("GMPass", function () {
     });
 
     it("allows open minting when allowance available", async function () {
-      await deployer.GMDerivativeWithAllowance.mint(8889);
-      expect(await contracts.GMDerivativeWithAllowance.ownerOf(8889)).to.be.equals(deployer.address);
+      await deployer.GMDerivativeWithAllowance.mint(10000);
+      expect(await contracts.GMDerivativeWithAllowance.ownerOf(10000)).to.be.equals(deployer.address);
     });
 
     it("allows n minting up to the allowance", async function () {
@@ -103,11 +103,11 @@ describe("GMPass", function () {
       const maxTotalSupply = (await contracts.GMDerivativeWithAllowance.maxTotalSupply()).toNumber();
       const openMints = maxTotalSupply - allowance;
       for (let i = 0; i < openMints; i++) {
-        const tokenId = 8889 + i;
+        const tokenId = 10000 + i;
         await deployer.GMDerivativeWithAllowance.mint(tokenId);
         expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
-      await expect(deployer.GMDerivativeWithAllowance.mint(8889 + openMints)).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
     });
@@ -139,13 +139,13 @@ describe("GMPass", function () {
         await deployer.GMDerivativeWithAllowance.mintWithGM(tokenId);
       }
       for (let i = 0; i < openMints; i++) {
-        const tokenId = 8889 + i;
+        const tokenId = 10000 + i;
         await deployer.GMDerivativeWithAllowance.mint(tokenId);
       }
       await expect(deployer.GMDerivativeWithAllowance.mintWithGM(allowance)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
-      await expect(deployer.GMDerivativeWithAllowance.mint(8889 + openMints)).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
       expect(await contracts.GMDerivativeWithAllowance.totalSupply()).to.be.equals(maxTotalSupply);
@@ -154,7 +154,7 @@ describe("GMPass", function () {
     it("forbids open minting when total supply=1 and allowance=1", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
       const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.N.address, false, 1, 1, 0, 0)) as GMPass;
-      await expect(nDerivative.mint(9999)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
+      await expect(nDerivative.mint(10000)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
     });
 
     it("allows n minting when total supply=1 and allowance=1", async function () {
@@ -170,8 +170,8 @@ describe("GMPass", function () {
     it("allows open minting when total supply=1 and allowance=0", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
       const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.N.address, false, 1, 0, 0, 0)) as GMPass;
-      await nDerivative.mint(8889);
-      expect(await nDerivative.ownerOf(8889)).to.be.equals(deployer.address);
+      await nDerivative.mint(10000);
+      expect(await nDerivative.ownerOf(10000)).to.be.equals(deployer.address);
     });
 
     it("forbids open minting with token id beyond range", async function () {
@@ -187,7 +187,7 @@ describe("GMPass", function () {
         0,
         0,
       )) as GMPass;
-      const lastAllowedTokenId = 8888 + totalSupply;
+      const lastAllowedTokenId = 9999 + totalSupply;
       await nDerivative.mint(lastAllowedTokenId);
       expect(await nDerivative.ownerOf(lastAllowedTokenId)).to.be.equals(deployer.address);
       // We could have a more meaningful revert but this does the job
