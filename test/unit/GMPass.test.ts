@@ -23,6 +23,7 @@ describe("GMPass", function () {
         "GMPass:INVALID_SUPPLY",
       );
     });
+
     it("reverts on restricted minting with total supply > n supply", async function () {
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
       await expect(nPassFactory.deploy("ND", "ND", contracts.N.address, true, 10000, 0, 0, 0)).to.be.revertedWith(
@@ -42,8 +43,8 @@ describe("GMPass", function () {
     it("allows only n owner to call mintWithGM", async function () {
       await users[0].N.claim(2);
       expect(await contracts.N.ownerOf(2)).to.be.equals(users[0].address);
-      await expect(deployer.GMDerivative.mintWithGM(2)).to.be.revertedWith("GMPass:INVALID_OWNER");
-      await users[0].GMDerivative.mintWithGM(2);
+      await expect(deployer.GMDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:INVALID_OWNER");
+      await users[0].GMDerivative.mintWithGMTokenId(2);
       expect(await contracts.GMDerivative.ownerOf(2)).to.be.equals(users[0].address);
     });
 
@@ -74,7 +75,7 @@ describe("GMPass", function () {
     it("allows n minting when allowance available", async function () {
       await deployer.N.claim(2);
       expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
-      await deployer.GMDerivativeWithAllowance.mintWithGM(2);
+      await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(2);
       expect(await contracts.GMDerivativeWithAllowance.ownerOf(2)).to.be.equals(deployer.address);
     });
 
@@ -89,11 +90,11 @@ describe("GMPass", function () {
         const tokenId = i + 1;
         await deployer.N.claim(tokenId);
         expect(await contracts.N.ownerOf(tokenId)).to.be.equals(deployer.address);
-        await deployer.GMDerivativeWithAllowance.mintWithGM(tokenId);
+        await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
         expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
 
-      await expect(deployer.GMDerivativeWithAllowance.mintWithGM(allowance)).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithAllowance.mintWithGMTokenId(allowance)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
     });
@@ -136,13 +137,13 @@ describe("GMPass", function () {
       for (let i = 0; i < allowance; i++) {
         const tokenId = i + 1;
         await deployer.N.claim(tokenId);
-        await deployer.GMDerivativeWithAllowance.mintWithGM(tokenId);
+        await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
       }
       for (let i = 0; i < openMints; i++) {
         const tokenId = 10000 + i;
         await deployer.GMDerivativeWithAllowance.mint(tokenId);
       }
-      await expect(deployer.GMDerivativeWithAllowance.mintWithGM(allowance)).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithAllowance.mintWithGMTokenId(allowance)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
       await expect(deployer.GMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
@@ -162,9 +163,9 @@ describe("GMPass", function () {
       await deployer.N.claim(2);
       const nPassFactory = await ethers.getContractFactory("MockGMPass");
       const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.N.address, false, 1, 1, 0, 0)) as GMPass;
-      await nDerivative.mintWithGM(1);
+      await nDerivative.mintWithGMTokenId(1);
       expect(await nDerivative.ownerOf(1)).to.be.equals(deployer.address);
-      await expect(nDerivative.mintWithGM(2)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
+      await expect(nDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
     });
 
     it("allows open minting when total supply=1 and allowance=0", async function () {
@@ -201,13 +202,13 @@ describe("GMPass", function () {
     it("requires n token holder to pay correct amount", async function () {
       await deployer.N.claim(1000);
       const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
-      await expect(deployer.GMDerivativeWithPrice.mintWithGM(1000, { value: price.sub(1) })).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.sub(1) })).to.be.revertedWith(
         "GMPass:INVALID_PRICE",
       );
-      await expect(deployer.GMDerivativeWithPrice.mintWithGM(1000, { value: price.add(1) })).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.add(1) })).to.be.revertedWith(
         "GMPass:INVALID_PRICE",
       );
-      await deployer.GMDerivativeWithPrice.mintWithGM(1000, { value: price });
+      await deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price });
       expect(await contracts.GMDerivativeWithPrice.ownerOf(1000)).to.be.equals(deployer.address);
     });
 
@@ -248,7 +249,7 @@ describe("GMPass", function () {
       expect(await contracts.N.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.N.ownerOf(3)).to.be.equals(deployer.address);
-      await deployer.GMDerivative.multiMintWithGM([1, 2, 3]);
+      await deployer.GMDerivative.multiMintWithGMTokenIds([1, 2, 3]);
       expect(await contracts.GMDerivative.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.GMDerivative.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.GMDerivative.ownerOf(3)).to.be.equals(deployer.address);
@@ -262,7 +263,7 @@ describe("GMPass", function () {
       expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.N.ownerOf(3)).to.be.equals(deployer.address);
       const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
-      await deployer.GMDerivativeWithPrice.multiMintWithGM([1, 2, 3], { value: price.mul(3) });
+      await deployer.GMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3], { value: price.mul(3) });
       expect(await contracts.GMDerivativeWithPrice.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.GMDerivativeWithPrice.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.GMDerivativeWithPrice.ownerOf(3)).to.be.equals(deployer.address);
@@ -274,18 +275,18 @@ describe("GMPass", function () {
       await users[0].N.claim(3);
       expect(await contracts.N.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.N.ownerOf(2)).to.be.equals(deployer.address);
-      await expect(deployer.GMDerivative.multiMintWithGM([1, 2, 3])).to.be.revertedWith("GMPass:INVALID_OWNER");
+      await expect(deployer.GMDerivative.multiMintWithGMTokenIds([1, 2, 3])).to.be.revertedWith("GMPass:INVALID_OWNER");
     });
 
     it("reverts multi mint if goes above total supply", async function () {
-      await expect(deployer.GMDerivativeWithAllowance.multiMintWithGM([1, 2, 3, 4, 5, 6])).to.be.revertedWith(
+      await expect(deployer.GMDerivativeWithAllowance.multiMintWithGMTokenIds([1, 2, 3, 4, 5, 6])).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
     });
     it("reverts multi mint if price wrong", async function () {
       const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
       await expect(
-        deployer.GMDerivativeWithPrice.multiMintWithGM([1, 2, 3, 4, 5], { value: price.mul(3) }),
+        deployer.GMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3, 4, 5], { value: price.mul(3) }),
       ).to.be.revertedWith("GMPass:INVALID_PRICE");
     });
   });

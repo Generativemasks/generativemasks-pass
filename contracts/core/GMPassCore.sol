@@ -67,13 +67,38 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         return ((maskNumber + GM_SUPPLY_AMOUNT) - METADATA_INDEX) % GM_SUPPLY_AMOUNT;
     }
     
+    function getTokenIdListFromMaskNumbers(uint256[] calldata maskNumbers) public pure returns(uint256[] memory) {
+        uint256[] memory tokenIdList = new uint256[](maskNumbers.length);
+        
+        for (uint256 i = 0; i < maskNumbers.length; i++) { 
+            require(maskNumbers[i] <= MAX_GM_TOKEN_ID, "Invalid mask number");
+            tokenIdList[i] = getTokenIdFromMaskNumber(maskNumbers[i]);
+        }
+        
+        return tokenIdList;
+    }
+
+    /**
+     * @notice Allow a n token holder to bulk mint tokens with id of their n tokens' id
+     * @param maskNumbers numbers to be converted to token ids to be minted
+     */
+    function multiMintWithGMMaskNumbers(uint256[] calldata maskNumbers) public payable virtual nonReentrant {
+        multiMintWithGMTokenIds(getTokenIdListFromMaskNumbers(maskNumbers));
+    }
+    
+    /**
+     * @notice Allow a n token holder to mint a token with one of their n token's id
+     * @param maskNumber numberto be converted to token id to be minted
+     */
+    function mintWithGMMaskNumber(uint256 maskNumber) public payable virtual nonReentrant {
+        mintWithGMTokenId(getTokenIdFromMaskNumber(maskNumber));
     }
 
     /**
      * @notice Allow a n token holder to bulk mint tokens with id of their n tokens' id
      * @param tokenIds Ids to be minted
      */
-    function multiMintWithGM(uint256[] calldata tokenIds) public payable virtual nonReentrant {
+    function multiMintWithGMTokenIds(uint256[] memory tokenIds) public payable virtual nonReentrant {
         uint256 maxTokensToMint = tokenIds.length;
         require(maxTokensToMint <= MAX_MULTI_MINT_AMOUNT, "GMPass:TOO_LARGE");
         require(
@@ -101,7 +126,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
      * @notice Allow a n token holder to mint a token with one of their n token's id
      * @param tokenId Id to be minted
      */
-    function mintWithGM(uint256 tokenId) public payable virtual nonReentrant {
+    function mintWithGMTokenId(uint256 tokenId) public payable virtual nonReentrant {
         require(
             // If no reserved allowance we respect total supply contraint
             (reservedAllowance == 0 && totalSupply() < maxTotalSupply) || reserveMinted < reservedAllowance,
