@@ -58,20 +58,20 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         priceForNHoldersInWei = priceForNHoldersInWei_;
         priceForOpenMintInWei = priceForOpenMintInWei_;
     }
-    
-    function getTokenIdFromMaskNumber(uint256 maskNumber) public pure returns(uint256) {
+
+    function getTokenIdFromMaskNumber(uint256 maskNumber) public pure returns (uint256) {
         require(maskNumber <= MAX_GM_TOKEN_ID, "Invalid mask number");
         return ((maskNumber + GM_SUPPLY_AMOUNT) - METADATA_INDEX) % GM_SUPPLY_AMOUNT;
     }
-    
-    function getTokenIdListFromMaskNumbers(uint256[] calldata maskNumbers) public pure returns(uint256[] memory) {
+
+    function getTokenIdListFromMaskNumbers(uint256[] calldata maskNumbers) public pure returns (uint256[] memory) {
         uint256[] memory tokenIdList = new uint256[](maskNumbers.length);
-        
-        for (uint256 i = 0; i < maskNumbers.length; i++) { 
+
+        for (uint256 i = 0; i < maskNumbers.length; i++) {
             require(maskNumbers[i] <= MAX_GM_TOKEN_ID, "Invalid mask number");
             tokenIdList[i] = getTokenIdFromMaskNumber(maskNumbers[i]);
         }
-        
+
         return tokenIdList;
     }
 
@@ -82,7 +82,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     function multiMintWithGMMaskNumbers(uint256[] calldata maskNumbers) public payable virtual nonReentrant {
         multiMintWithGMTokenIds(getTokenIdListFromMaskNumbers(maskNumbers));
     }
-    
+
     /**
      * @notice Allow a n token holder to mint a token with one of their n token's id
      * @param maskNumber numberto be converted to token id to be minted
@@ -99,9 +99,9 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         uint256 maxTokensToMint = tokenIds.length;
         require(maxTokensToMint <= MAX_MULTI_MINT_AMOUNT, "GMPass:TOO_LARGE");
         require(
-            // If no reserved allowance we respect total supply contraint
+        // If no reserved allowance we respect total supply contraint
             (reservedAllowance == 0 && totalSupply() + maxTokensToMint <= maxTotalSupply) ||
-                reserveMinted + maxTokensToMint <= reservedAllowance,
+            reserveMinted + maxTokensToMint <= reservedAllowance,
             "GMPass:MAX_ALLOCATION_REACHED"
         );
         require(msg.value == priceForNHoldersInWei * maxTokensToMint, "GMPass:INVALID_PRICE");
@@ -125,7 +125,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
      */
     function mintWithGMTokenId(uint256 tokenId) public payable virtual nonReentrant {
         require(
-            // If no reserved allowance we respect total supply contraint
+        // If no reserved allowance we respect total supply contraint
             (reservedAllowance == 0 && totalSupply() < maxTotalSupply) || reserveMinted < reservedAllowance,
             "GMPass:MAX_ALLOCATION_REACHED"
         );

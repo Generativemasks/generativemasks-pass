@@ -14,15 +14,15 @@ contract MockGMPass is GMPassCore {
         uint256 priceForNHoldersInWei,
         uint256 priceForOpenMintInWei
     )
-        GMPassCore(
-            name,
-            symbol,
-            gm,
-            onlyNHolders,
-            maxTotalSupply,
-            reservedAllowance,
-            priceForNHoldersInWei,
-            priceForOpenMintInWei
-        )
+    GMPassCore(
+        name,
+        symbol,
+        gm,
+        onlyNHolders,
+        maxTotalSupply,
+        reservedAllowance,
+        priceForNHoldersInWei,
+        priceForOpenMintInWei
+    )
     {}
 }

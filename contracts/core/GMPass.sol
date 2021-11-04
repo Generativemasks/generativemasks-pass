@@ -31,15 +31,15 @@ abstract contract GMPass is GMPassCore {
         uint256 priceForGMHoldersInWei,
         uint256 priceForOpenMintInWei
     )
-        GMPassCore(
-            name,
-            symbol,
-            IERC721(0x80416304142Fa37929f8A4Eee83eE7D2dAc12D7c),
-            onlyGMHolders,
-            maxTotalSupply,
-            reservedAllowance,
-            priceForGMHoldersInWei,
-            priceForOpenMintInWei
-        )
+    GMPassCore(
+        name,
+        symbol,
+        IERC721(0x80416304142Fa37929f8A4Eee83eE7D2dAc12D7c),
+        onlyGMHolders,
+        maxTotalSupply,
+        reservedAllowance,
+        priceForGMHoldersInWei,
+        priceForOpenMintInWei
+    )
     {}
 }

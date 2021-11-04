@@ -9,7 +9,7 @@ import "../core/GMPassCore.sol";
  * @title GenerativemasksDerivative
  */
 contract GenerativemasksDerivative is GMPassCore {
-    
+
     using Strings for uint256;
 
     address public derivedFrom;
@@ -23,7 +23,6 @@ contract GenerativemasksDerivative is GMPassCore {
         address _derivedFrom
     )
     GMPassCore(name, symbol, IERC721(_generativemasks), true, 10000, 10000, 0, 0)
-        // GMPassCore(name, symbol, iGM(_generativemasks), true, 10000, 10000, 0, 0)
     {
         __baseURI = baseURI;
         derivedFrom = _derivedFrom;
