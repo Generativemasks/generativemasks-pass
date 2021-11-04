@@ -18,22 +18,22 @@ describe("GMPass", function () {
 
   describe("Construction", async function () {
     it("reverts on supply = 0", async function () {
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(nPassFactory.deploy("ND", "ND", contracts.NFT.address, true, 0, 0, 0, 0)).to.be.revertedWith(
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
+      await expect(gmPassFactory.deploy("GMD", "GMD", contracts.NFT.address, true, 0, 0, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_SUPPLY",
       );
     });
 
     it("reverts on restricted minting with total supply > n supply", async function () {
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(nPassFactory.deploy("ND", "ND", contracts.NFT.address, true, 10000, 0, 0, 0)).to.be.revertedWith(
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
+      await expect(gmPassFactory.deploy("GMD", "GMD", contracts.NFT.address, true, 10000, 0, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_SUPPLY",
       );
     });
 
     it("reverts on minting with total supply < allowance", async function () {
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(nPassFactory.deploy("ND", "ND", contracts.NFT.address, true, 100, 101, 0, 0)).to.be.revertedWith(
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
+      await expect(gmPassFactory.deploy("GMD", "GMD", contracts.NFT.address, true, 100, 101, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_ALLOWANCE",
       );
     });
@@ -153,34 +153,61 @@ describe("GMPass", function () {
     });
 
     it("forbids open minting when total supply=1 and allowance=1", async function () {
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.NFT.address, false, 1, 1, 0, 0)) as GMPass;
-      await expect(nDerivative.mint(10000)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
+      const gmDerivative = (await gmPassFactory.deploy(
+        "GMD",
+        "GMD",
+        contracts.NFT.address,
+        false,
+        1,
+        1,
+        0,
+        0,
+      )) as GMPass;
+      await expect(gmDerivative.mint(10000)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
     });
 
     it("allows n minting when total supply=1 and allowance=1", async function () {
       await deployer.NFT.claim(1);
       await deployer.NFT.claim(2);
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.NFT.address, false, 1, 1, 0, 0)) as GMPass;
-      await nDerivative.mintWithGMTokenId(1);
-      expect(await nDerivative.ownerOf(1)).to.be.equals(deployer.address);
-      await expect(nDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
+      const gmDerivative = (await gmPassFactory.deploy(
+        "GMD",
+        "GMD",
+        contracts.NFT.address,
+        false,
+        1,
+        1,
+        0,
+        0,
+      )) as GMPass;
+      await gmDerivative.mintWithGMTokenId(1);
+      expect(await gmDerivative.ownerOf(1)).to.be.equals(deployer.address);
+      await expect(gmDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
     });
 
     it("allows open minting when total supply=1 and allowance=0", async function () {
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
-      const nDerivative = (await nPassFactory.deploy("ND", "ND", contracts.NFT.address, false, 1, 0, 0, 0)) as GMPass;
-      await nDerivative.mint(10000);
-      expect(await nDerivative.ownerOf(10000)).to.be.equals(deployer.address);
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
+      const gmDerivative = (await gmPassFactory.deploy(
+        "GMD",
+        "GMD",
+        contracts.NFT.address,
+        false,
+        1,
+        0,
+        0,
+        0,
+      )) as GMPass;
+      await gmDerivative.mint(10000);
+      expect(await gmDerivative.ownerOf(10000)).to.be.equals(deployer.address);
     });
 
     it("forbids open minting with token id beyond range", async function () {
-      const nPassFactory = await ethers.getContractFactory("MockGMPass");
+      const gmPassFactory = await ethers.getContractFactory("MockGMPass");
       const totalSupply = 100;
-      const nDerivative = (await nPassFactory.deploy(
-        "ND",
-        "ND",
+      const gmDerivative = (await gmPassFactory.deploy(
+        "GMD",
+        "GMD",
         contracts.NFT.address,
         false,
         totalSupply,
@@ -189,10 +216,10 @@ describe("GMPass", function () {
         0,
       )) as GMPass;
       const lastAllowedTokenId = 9999 + totalSupply;
-      await nDerivative.mint(lastAllowedTokenId);
-      expect(await nDerivative.ownerOf(lastAllowedTokenId)).to.be.equals(deployer.address);
+      await gmDerivative.mint(lastAllowedTokenId);
+      expect(await gmDerivative.ownerOf(lastAllowedTokenId)).to.be.equals(deployer.address);
       // We could have a more meaningful revert but this does the job
-      await expect(nDerivative.mint(lastAllowedTokenId + 1)).to.be.revertedWith(
+      await expect(gmDerivative.mint(lastAllowedTokenId + 1)).to.be.revertedWith(
         "ERC721: owner query for nonexistent token",
       );
     });
