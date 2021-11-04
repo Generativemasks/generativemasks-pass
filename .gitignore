@@ -45,3 +45,5 @@ networks/networks.local.json
 
 # vercel
 .vercel
+
+.deps/
