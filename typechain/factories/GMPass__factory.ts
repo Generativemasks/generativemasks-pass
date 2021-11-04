@@ -252,7 +252,7 @@ const _abi = [
     name: "gm",
     outputs: [
       {
-        internalType: "contract IN",
+        internalType: "contract IERC721",
         name: "",
         type: "address",
       },

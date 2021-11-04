@@ -27,7 +27,7 @@ const _abi = [
         type: "string",
       },
       {
-        internalType: "contract IN",
+        internalType: "contract IERC721",
         name: "gm",
         type: "address",
       },
@@ -305,7 +305,7 @@ const _abi = [
     name: "gm",
     outputs: [
       {
-        internalType: "contract IN",
+        internalType: "contract IERC721",
         name: "",
         type: "address",
       },
