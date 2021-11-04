@@ -270,7 +270,7 @@ contract N is ERC721Enumerable, ReentrancyGuard, Ownable {
     }
 
     function claim(uint256 tokenId) public nonReentrant {
-        require(tokenId > 0 && tokenId < 8889, "Token ID invalid");
+        require(tokenId >= 0 && tokenId < 10000, "Token ID invalid");
         _safeMint(_msgSender(), tokenId);
     }
 
