@@ -48,7 +48,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         uint256 priceForOpenMintInWei_
     ) ERC721(name, symbol) {
         require(maxTotalSupply_ > 0, "GMPass:INVALID_SUPPLY");
-        require(!onlyGMHolders_ || (onlyGMHolders_ && maxTotalSupply_ <= MAX_GM_TOKEN_ID), "GMPass:INVALID_SUPPLY");
+        require(!onlyGMHolders_ || (onlyGMHolders_ && maxTotalSupply_ <= GM_SUPPLY_AMOUNT), "GMPass:INVALID_SUPPLY");
         require(maxTotalSupply_ >= reservedAllowance_, "GMPass:INVALID_ALLOWANCE");
         // If restricted to gm token holders we limit max total supply
         gm = gm_;

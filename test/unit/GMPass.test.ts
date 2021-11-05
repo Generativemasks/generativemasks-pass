@@ -26,7 +26,7 @@ describe("GMPass", function () {
 
     it("reverts on restricted minting with total supply > n supply", async function () {
       const gmPassFactory = await ethers.getContractFactory("MockGMPass");
-      await expect(gmPassFactory.deploy("GMD", "GMD", contracts.NFT.address, true, 10000, 0, 0, 0)).to.be.revertedWith(
+      await expect(gmPassFactory.deploy("GMD", "GMD", contracts.NFT.address, true, 10001, 0, 0, 0)).to.be.revertedWith(
         "GMPass:INVALID_SUPPLY",
       );
     });
