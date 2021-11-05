@@ -30,11 +30,11 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
      * @notice Construct an GMPassCore instance
      * @param name Name of the token
      * @param symbol Symbol of the token
-     * @param gm_ Address of your n instance (only for testing)
-     * @param onlyGMHolders_ True if only n tokens holders can mint this token
+     * @param gm_ Address of your GMs instance (only for testing)
+     * @param onlyGMHolders_ True if only GMs tokens holders can mint this token
      * @param maxTotalSupply_ Maximum number of tokens that can ever be minted
-     * @param reservedAllowance_ Number of tokens reserved for n token holders
-     * @param priceForNHoldersInWei_ Price n token holders need to pay to mint
+     * @param reservedAllowance_ Number of tokens reserved for GMs token holders
+     * @param priceForNHoldersInWei_ Price GMs token holders need to pay to mint
      * @param priceForOpenMintInWei_ Price open minter need to pay to mint
      */
     constructor(
@@ -76,7 +76,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a n token holder to bulk mint tokens with id of their n tokens' id
+     * @notice Allow a GMs token holder to bulk mint tokens with id of their GMs tokens' id
      * @param maskNumbers numbers to be converted to token ids to be minted
      */
     function multiMintWithGMMaskNumbers(uint256[] calldata maskNumbers) public payable virtual nonReentrant {
@@ -84,7 +84,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a n token holder to mint a token with one of their n token's id
+     * @notice Allow a GMs token holder to mint a token with one of their GMs token's id
      * @param maskNumber numberto be converted to token id to be minted
      */
     function mintWithGMMaskNumber(uint256 maskNumber) public payable virtual nonReentrant {
@@ -92,7 +92,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a n token holder to bulk mint tokens with id of their n tokens' id
+     * @notice Allow a GMs token holder to bulk mint tokens with id of their GMs tokens' id
      * @param tokenIds Ids to be minted
      */
     function multiMintWithGMTokenIds(uint256[] memory tokenIds) public payable virtual nonReentrant {
@@ -120,7 +120,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a n token holder to mint a token with one of their n token's id
+     * @notice Allow a GMs token holder to mint a token with one of their GMs token's id
      * @param tokenId Id to be minted
      */
     function mintWithGMTokenId(uint256 tokenId) public payable virtual nonReentrant {
@@ -141,7 +141,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
 
     /**
      * @notice Allow anyone to mint a token with the supply id if this pass is unrestricted.
-     *         n token holders can use this function without using the n token holders allowance,
+     *         GMs token holders can use this function without using the GMs token holders allowance,
      *         this is useful when the allowance is fully utilized.
      * @param tokenId Id to be minted
      */
@@ -167,7 +167,7 @@ abstract contract GMPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Calculate the currently available number of reserved tokens for n token holders
+     * @notice Calculate the currently available number of reserved tokens for GMs token holders
      * @return Reserved mint available
      */
     function nHoldersMintsAvailable() external view returns (uint256) {
