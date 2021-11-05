@@ -149,7 +149,7 @@ describe("GMsPass", function () {
       await expect(deployer.MockGMsDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
         "GMsPass:MAX_ALLOCATION_REACHED",
       );
-      expect(await contracts.MockGMsDerivativeWithAllowance.totalSupply()).to.be.equals(maxTotalSupply);
+      expect(await contracts.MockGMsDerivativeWithAllowance.mintedCount()).to.be.equals(maxTotalSupply);
     });
 
     it("forbids open minting when total supply=1 and allowance=1", async function () {

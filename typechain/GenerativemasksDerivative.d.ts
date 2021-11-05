@@ -39,6 +39,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "mint(uint256)": FunctionFragment;
     "mintWithGMsMaskNumber(uint256)": FunctionFragment;
     "mintWithGMsTokenId(uint256)": FunctionFragment;
+    "mintedCount()": FunctionFragment;
     "multiMintWithGMsMaskNumbers(uint256[])": FunctionFragment;
     "multiMintWithGMsTokenIds(uint256[])": FunctionFragment;
     "nHoldersMintsAvailable()": FunctionFragment;
@@ -56,10 +57,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tokenByIndex(uint256)": FunctionFragment;
-    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
-    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateBaseURI(string)": FunctionFragment;
@@ -126,6 +124,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "mintedCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "multiMintWithGMsMaskNumbers",
     values: [BigNumberish[]]
   ): string;
@@ -185,20 +187,8 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
@@ -271,6 +261,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "mintedCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "multiMintWithGMsMaskNumbers",
     data: BytesLike
   ): Result;
@@ -326,19 +320,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
@@ -473,6 +455,8 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    mintedCount(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -538,23 +522,10 @@ export class GenerativemasksDerivative extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferFrom(
       from: string,
@@ -638,6 +609,8 @@ export class GenerativemasksDerivative extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  mintedCount(overrides?: CallOverrides): Promise<BigNumber>;
+
   multiMintWithGMsMaskNumbers(
     maskNumbers: BigNumberish[],
     overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -700,20 +673,7 @@ export class GenerativemasksDerivative extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -794,6 +754,8 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    mintedCount(overrides?: CallOverrides): Promise<BigNumber>;
+
     multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
@@ -854,20 +816,7 @@ export class GenerativemasksDerivative extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -984,6 +933,8 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    mintedCount(overrides?: CallOverrides): Promise<BigNumber>;
+
     multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -1049,23 +1000,10 @@ export class GenerativemasksDerivative extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1155,6 +1093,8 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    mintedCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -1228,23 +1168,10 @@ export class GenerativemasksDerivative extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,

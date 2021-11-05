@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice This contract provides basic functionalities to allow minting using the GMsPass
  * @dev This contract should be used only for testing or testnet deployments
  */
-abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
+abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     uint256 public constant MAX_MULTI_MINT_AMOUNT = 32;
     uint256 public constant GMs_SUPPLY_AMOUNT = 10000;
     uint256 public constant MAX_GMs_TOKEN_ID = 9999;
@@ -25,6 +25,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     uint256 public immutable maxTotalSupply;
     uint256 public immutable priceForNHoldersInWei;
     uint256 public immutable priceForOpenMintInWei;
+    uint256 public mintedCount;
 
     /**
      * @notice Construct an GMsPassCore instance
@@ -100,7 +101,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         require(maxTokensToMint <= MAX_MULTI_MINT_AMOUNT, "GMsPass:TOO_LARGE");
         require(
         // If no reserved allowance we respect total supply contraint
-            (reservedAllowance == 0 && totalSupply() + maxTokensToMint <= maxTotalSupply) ||
+            (reservedAllowance == 0 && mintedCount + maxTokensToMint <= maxTotalSupply) ||
             reserveMinted + maxTokensToMint <= reservedAllowance,
             "GMsPass:MAX_ALLOCATION_REACHED"
         );
@@ -114,6 +115,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         if (reservedAllowance > 0) {
             reserveMinted += uint16(maxTokensToMint);
         }
+        mintedCount += maxTokensToMint;
         for (uint256 i = 0; i < maxTokensToMint; i++) {
             _safeMint(msg.sender, tokenIds[i]);
         }
@@ -126,7 +128,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
     function mintWithGMsTokenId(uint256 tokenId) public payable virtual nonReentrant {
         require(
         // If no reserved allowance we respect total supply contraint
-            (reservedAllowance == 0 && totalSupply() < maxTotalSupply) || reserveMinted < reservedAllowance,
+            (reservedAllowance == 0 && mintedCount < maxTotalSupply) || reserveMinted < reservedAllowance,
             "GMsPass:MAX_ALLOCATION_REACHED"
         );
         require(gm.ownerOf(tokenId) == msg.sender, "GMsPass:INVALID_OWNER");
@@ -136,6 +138,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
         if (reservedAllowance > 0) {
             reserveMinted++;
         }
+        mintedCount++;
         _safeMint(msg.sender, tokenId);
     }
 
@@ -153,7 +156,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
             "GMsPass:INVALID_ID"
         );
         require(msg.value == priceForOpenMintInWei, "GMsPass:INVALID_PRICE");
-
+        mintedCount++;
         _safeMint(msg.sender, tokenId);
     }
 
@@ -180,7 +183,7 @@ abstract contract GMsPassCore is ERC721Enumerable, ReentrancyGuard, Ownable {
      */
     function openMintsAvailable() public view returns (uint256) {
         uint256 maxOpenMints = maxTotalSupply - reservedAllowance;
-        uint256 currentOpenMints = totalSupply() - reserveMinted;
+        uint256 currentOpenMints = mintedCount - reserveMinted;
         return maxOpenMints - currentOpenMints;
     }
 
