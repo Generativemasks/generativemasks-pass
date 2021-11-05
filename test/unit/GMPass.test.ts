@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { GMPass } from "../../typechain";
 import { ETH, getEthBalance } from "../../utils/utils";
-import { Contracts, setupIntegration as setupGMDerivative, User } from "../fixtures";
+import { Contracts, setupIntegration as setupMockGMDerivative, User } from "../fixtures";
 
 const GAS_ADJ = ETH(0.01);
 
@@ -13,7 +13,7 @@ describe("GMPass", function () {
   let users: User[];
 
   beforeEach(async () => {
-    ({ contracts, deployer, users } = await setupGMDerivative());
+    ({ contracts, deployer, users } = await setupMockGMDerivative());
   });
 
   describe("Construction", async function () {
@@ -43,19 +43,19 @@ describe("GMPass", function () {
     it("allows only n owner to call mintWithGM", async function () {
       await users[0].NFT.claim(2);
       expect(await contracts.NFT.ownerOf(2)).to.be.equals(users[0].address);
-      await expect(deployer.GMDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:INVALID_OWNER");
-      await users[0].GMDerivative.mintWithGMTokenId(2);
-      expect(await contracts.GMDerivative.ownerOf(2)).to.be.equals(users[0].address);
+      await expect(deployer.MockGMDerivative.mintWithGMTokenId(2)).to.be.revertedWith("GMPass:INVALID_OWNER");
+      await users[0].MockGMDerivative.mintWithGMTokenId(2);
+      expect(await contracts.MockGMDerivative.ownerOf(2)).to.be.equals(users[0].address);
     });
 
     it("forbids non n holder to mint inside n token ids range", async function () {
       await users[0].NFT.claim(8888);
-      await expect(deployer.GMDerivative.mint(8888)).to.be.revertedWith("GMPass:INVALID_ID");
+      await expect(deployer.MockGMDerivative.mint(8888)).to.be.revertedWith("GMPass:INVALID_ID");
     });
 
     it("allows anyone to mint out of n token ids range with unrestricted pass", async function () {
-      await deployer.GMDerivative.mint(10000);
-      expect(await contracts.GMDerivative.ownerOf(10000)).to.be.equals(deployer.address);
+      await deployer.MockGMDerivative.mint(10000);
+      expect(await contracts.MockGMDerivative.ownerOf(10000)).to.be.equals(deployer.address);
     });
   });
 
@@ -63,11 +63,11 @@ describe("GMPass", function () {
     it("does not allow anyone to mint inside n token ids range with unrestricted pass", async function () {
       await users[0].NFT.claim(1000);
       // Different user trying to mint
-      await expect(deployer.GMDerivativeRestricted.mint(1000)).to.be.revertedWith("GMPass:OPEN_MINTING_DISABLED");
+      await expect(deployer.MockGMDerivativeRestricted.mint(1000)).to.be.revertedWith("GMPass:OPEN_MINTING_DISABLED");
     });
 
     it("allows none to mint out of n token ids range with restricted pass", async function () {
-      await expect(deployer.GMDerivativeRestricted.mint(9999)).to.be.revertedWith("GMPass:OPEN_MINTING_DISABLED");
+      await expect(deployer.MockGMDerivativeRestricted.mint(9999)).to.be.revertedWith("GMPass:OPEN_MINTING_DISABLED");
     });
   });
 
@@ -75,81 +75,81 @@ describe("GMPass", function () {
     it("allows n minting when allowance available", async function () {
       await deployer.NFT.claim(2);
       expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
-      await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(2);
-      expect(await contracts.GMDerivativeWithAllowance.ownerOf(2)).to.be.equals(deployer.address);
+      await deployer.MockGMDerivativeWithAllowance.mintWithGMTokenId(2);
+      expect(await contracts.MockGMDerivativeWithAllowance.ownerOf(2)).to.be.equals(deployer.address);
     });
 
     it("allows open minting when allowance available", async function () {
-      await deployer.GMDerivativeWithAllowance.mint(10000);
-      expect(await contracts.GMDerivativeWithAllowance.ownerOf(10000)).to.be.equals(deployer.address);
+      await deployer.MockGMDerivativeWithAllowance.mint(10000);
+      expect(await contracts.MockGMDerivativeWithAllowance.ownerOf(10000)).to.be.equals(deployer.address);
     });
 
     it("allows n minting up to the allowance", async function () {
-      const allowance = await contracts.GMDerivativeWithAllowance.reservedAllowance();
+      const allowance = await contracts.MockGMDerivativeWithAllowance.reservedAllowance();
       for (let i = 0; i < allowance; i++) {
         const tokenId = i + 1;
         await deployer.NFT.claim(tokenId);
         expect(await contracts.NFT.ownerOf(tokenId)).to.be.equals(deployer.address);
-        await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
-        expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
+        await deployer.MockGMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
+        expect(await contracts.MockGMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
 
-      await expect(deployer.GMDerivativeWithAllowance.mintWithGMTokenId(allowance)).to.be.revertedWith(
+      await expect(deployer.MockGMDerivativeWithAllowance.mintWithGMTokenId(allowance)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
     });
 
     it("allows open minting up to the max total supply respecting allowance", async function () {
-      const allowance = await contracts.GMDerivativeWithAllowance.reservedAllowance();
-      const maxTotalSupply = (await contracts.GMDerivativeWithAllowance.maxTotalSupply()).toNumber();
+      const allowance = await contracts.MockGMDerivativeWithAllowance.reservedAllowance();
+      const maxTotalSupply = (await contracts.MockGMDerivativeWithAllowance.maxTotalSupply()).toNumber();
       const openMints = maxTotalSupply - allowance;
       for (let i = 0; i < openMints; i++) {
         const tokenId = 10000 + i;
-        await deployer.GMDerivativeWithAllowance.mint(tokenId);
-        expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
+        await deployer.MockGMDerivativeWithAllowance.mint(tokenId);
+        expect(await contracts.MockGMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
-      await expect(deployer.GMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
+      await expect(deployer.MockGMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
     });
 
     it("allows open minting up to the max total supply respecting allowance for n token holders", async function () {
-      const allowance = await contracts.GMDerivativeWithAllowance.reservedAllowance();
-      const maxTotalSupply = (await contracts.GMDerivativeWithAllowance.maxTotalSupply()).toNumber();
+      const allowance = await contracts.MockGMDerivativeWithAllowance.reservedAllowance();
+      const maxTotalSupply = (await contracts.MockGMDerivativeWithAllowance.maxTotalSupply()).toNumber();
       const openMints = maxTotalSupply - allowance;
       for (let i = 0; i < openMints; i++) {
         const tokenId = i + 1;
         await deployer.NFT.claim(tokenId);
         expect(await contracts.NFT.ownerOf(tokenId)).to.be.equals(deployer.address);
-        await deployer.GMDerivativeWithAllowance.mint(tokenId);
-        expect(await contracts.GMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
+        await deployer.MockGMDerivativeWithAllowance.mint(tokenId);
+        expect(await contracts.MockGMDerivativeWithAllowance.ownerOf(tokenId)).to.be.equals(deployer.address);
       }
       await deployer.NFT.claim(openMints + 1);
-      await expect(deployer.GMDerivativeWithAllowance.mint(openMints + 1)).to.be.revertedWith(
+      await expect(deployer.MockGMDerivativeWithAllowance.mint(openMints + 1)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
     });
 
     it("allows all minting up to the max total supply respecting allowance", async function () {
-      const allowance = await contracts.GMDerivativeWithAllowance.reservedAllowance();
-      const maxTotalSupply = (await contracts.GMDerivativeWithAllowance.maxTotalSupply()).toNumber();
+      const allowance = await contracts.MockGMDerivativeWithAllowance.reservedAllowance();
+      const maxTotalSupply = (await contracts.MockGMDerivativeWithAllowance.maxTotalSupply()).toNumber();
       const openMints = maxTotalSupply - allowance;
       for (let i = 0; i < allowance; i++) {
         const tokenId = i + 1;
         await deployer.NFT.claim(tokenId);
-        await deployer.GMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
+        await deployer.MockGMDerivativeWithAllowance.mintWithGMTokenId(tokenId);
       }
       for (let i = 0; i < openMints; i++) {
         const tokenId = 10000 + i;
-        await deployer.GMDerivativeWithAllowance.mint(tokenId);
+        await deployer.MockGMDerivativeWithAllowance.mint(tokenId);
       }
-      await expect(deployer.GMDerivativeWithAllowance.mintWithGMTokenId(allowance)).to.be.revertedWith(
+      await expect(deployer.MockGMDerivativeWithAllowance.mintWithGMTokenId(allowance)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
-      await expect(deployer.GMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
+      await expect(deployer.MockGMDerivativeWithAllowance.mint(10000 + openMints)).to.be.revertedWith(
         "GMPass:MAX_ALLOCATION_REACHED",
       );
-      expect(await contracts.GMDerivativeWithAllowance.totalSupply()).to.be.equals(maxTotalSupply);
+      expect(await contracts.MockGMDerivativeWithAllowance.totalSupply()).to.be.equals(maxTotalSupply);
     });
 
     it("forbids open minting when total supply=1 and allowance=1", async function () {
@@ -228,43 +228,45 @@ describe("GMPass", function () {
   describe("Price", async function () {
     it("requires n token holder to pay correct amount", async function () {
       await deployer.NFT.claim(1000);
-      const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
-      await expect(deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.sub(1) })).to.be.revertedWith(
-        "GMPass:INVALID_PRICE",
-      );
-      await expect(deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.add(1) })).to.be.revertedWith(
-        "GMPass:INVALID_PRICE",
-      );
-      await deployer.GMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price });
-      expect(await contracts.GMDerivativeWithPrice.ownerOf(1000)).to.be.equals(deployer.address);
+      const price = await contracts.MockGMDerivativeWithPrice.priceForNHoldersInWei();
+      await expect(
+        deployer.MockGMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.sub(1) }),
+      ).to.be.revertedWith("GMPass:INVALID_PRICE");
+      await expect(
+        deployer.MockGMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price.add(1) }),
+      ).to.be.revertedWith("GMPass:INVALID_PRICE");
+      await deployer.MockGMDerivativeWithPrice.mintWithGMTokenId(1000, { value: price });
+      expect(await contracts.MockGMDerivativeWithPrice.ownerOf(1000)).to.be.equals(deployer.address);
     });
 
     it("requires open minter to pay correct amount", async function () {
-      const price = await contracts.GMDerivativeWithPrice.priceForOpenMintInWei();
-      await expect(deployer.GMDerivativeWithPrice.mint(10000, { value: price.sub(1) })).to.be.revertedWith(
+      const price = await contracts.MockGMDerivativeWithPrice.priceForOpenMintInWei();
+      await expect(deployer.MockGMDerivativeWithPrice.mint(10000, { value: price.sub(1) })).to.be.revertedWith(
         "GMPass:INVALID_PRICE",
       );
-      await expect(deployer.GMDerivativeWithPrice.mint(10000, { value: price.add(1) })).to.be.revertedWith(
+      await expect(deployer.MockGMDerivativeWithPrice.mint(10000, { value: price.add(1) })).to.be.revertedWith(
         "GMPass:INVALID_PRICE",
       );
-      await deployer.GMDerivativeWithPrice.mint(10000, { value: price });
-      expect(await contracts.GMDerivativeWithPrice.ownerOf(10000)).to.be.equals(deployer.address);
+      await deployer.MockGMDerivativeWithPrice.mint(10000, { value: price });
+      expect(await contracts.MockGMDerivativeWithPrice.ownerOf(10000)).to.be.equals(deployer.address);
     });
 
     it("allows owner to withdraw", async function () {
-      const price = await contracts.GMDerivativeWithPrice.priceForOpenMintInWei();
-      await users[0].GMDerivativeWithPrice.mint(10000, { value: price });
-      await users[0].GMDerivativeWithPrice.mint(10001, { value: price });
+      const price = await contracts.MockGMDerivativeWithPrice.priceForOpenMintInWei();
+      await users[0].MockGMDerivativeWithPrice.mint(10000, { value: price });
+      await users[0].MockGMDerivativeWithPrice.mint(10001, { value: price });
       const initialBalance = await getEthBalance(deployer.address);
-      await deployer.GMDerivativeWithPrice.withdrawAll();
+      await deployer.MockGMDerivativeWithPrice.withdrawAll();
       expect(await getEthBalance(deployer.address)).to.be.gte(initialBalance.add(price.mul(2)).sub(GAS_ADJ));
     });
 
     it("forbids non owner to withdraw", async function () {
-      const price = await contracts.GMDerivativeWithPrice.priceForOpenMintInWei();
-      await users[0].GMDerivativeWithPrice.mint(10000, { value: price });
-      await users[0].GMDerivativeWithPrice.mint(10001, { value: price });
-      await expect(users[0].GMDerivativeWithPrice.withdrawAll()).to.be.revertedWith("Ownable: caller is not the owner");
+      const price = await contracts.MockGMDerivativeWithPrice.priceForOpenMintInWei();
+      await users[0].MockGMDerivativeWithPrice.mint(10000, { value: price });
+      await users[0].MockGMDerivativeWithPrice.mint(10001, { value: price });
+      await expect(users[0].MockGMDerivativeWithPrice.withdrawAll()).to.be.revertedWith(
+        "Ownable: caller is not the owner",
+      );
     });
   });
 
@@ -276,10 +278,10 @@ describe("GMPass", function () {
       expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(3)).to.be.equals(deployer.address);
-      await deployer.GMDerivative.multiMintWithGMTokenIds([1, 2, 3]);
-      expect(await contracts.GMDerivative.ownerOf(1)).to.be.equals(deployer.address);
-      expect(await contracts.GMDerivative.ownerOf(2)).to.be.equals(deployer.address);
-      expect(await contracts.GMDerivative.ownerOf(3)).to.be.equals(deployer.address);
+      await deployer.MockGMDerivative.multiMintWithGMTokenIds([1, 2, 3]);
+      expect(await contracts.MockGMDerivative.ownerOf(1)).to.be.equals(deployer.address);
+      expect(await contracts.MockGMDerivative.ownerOf(2)).to.be.equals(deployer.address);
+      expect(await contracts.MockGMDerivative.ownerOf(3)).to.be.equals(deployer.address);
     });
 
     it("allows to mint multiple owned tokens with price", async function () {
@@ -289,11 +291,11 @@ describe("GMPass", function () {
       expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(3)).to.be.equals(deployer.address);
-      const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
-      await deployer.GMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3], { value: price.mul(3) });
-      expect(await contracts.GMDerivativeWithPrice.ownerOf(1)).to.be.equals(deployer.address);
-      expect(await contracts.GMDerivativeWithPrice.ownerOf(2)).to.be.equals(deployer.address);
-      expect(await contracts.GMDerivativeWithPrice.ownerOf(3)).to.be.equals(deployer.address);
+      const price = await contracts.MockGMDerivativeWithPrice.priceForNHoldersInWei();
+      await deployer.MockGMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3], { value: price.mul(3) });
+      expect(await contracts.MockGMDerivativeWithPrice.ownerOf(1)).to.be.equals(deployer.address);
+      expect(await contracts.MockGMDerivativeWithPrice.ownerOf(2)).to.be.equals(deployer.address);
+      expect(await contracts.MockGMDerivativeWithPrice.ownerOf(3)).to.be.equals(deployer.address);
     });
 
     it("reverts multi mint if one token not owned", async function () {
@@ -302,18 +304,20 @@ describe("GMPass", function () {
       await users[0].NFT.claim(3);
       expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
-      await expect(deployer.GMDerivative.multiMintWithGMTokenIds([1, 2, 3])).to.be.revertedWith("GMPass:INVALID_OWNER");
+      await expect(deployer.MockGMDerivative.multiMintWithGMTokenIds([1, 2, 3])).to.be.revertedWith(
+        "GMPass:INVALID_OWNER",
+      );
     });
 
     it("reverts multi mint if goes above total supply", async function () {
-      await expect(deployer.GMDerivativeWithAllowance.multiMintWithGMTokenIds([1, 2, 3, 4, 5, 6])).to.be.revertedWith(
-        "GMPass:MAX_ALLOCATION_REACHED",
-      );
+      await expect(
+        deployer.MockGMDerivativeWithAllowance.multiMintWithGMTokenIds([1, 2, 3, 4, 5, 6]),
+      ).to.be.revertedWith("GMPass:MAX_ALLOCATION_REACHED");
     });
     it("reverts multi mint if price wrong", async function () {
-      const price = await contracts.GMDerivativeWithPrice.priceForNHoldersInWei();
+      const price = await contracts.MockGMDerivativeWithPrice.priceForNHoldersInWei();
       await expect(
-        deployer.GMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3, 4, 5], { value: price.mul(3) }),
+        deployer.MockGMDerivativeWithPrice.multiMintWithGMTokenIds([1, 2, 3, 4, 5], { value: price.mul(3) }),
       ).to.be.revertedWith("GMPass:INVALID_PRICE");
     });
   });

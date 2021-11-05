@@ -6,10 +6,10 @@ import { setupUser, setupUsers } from "./users";
 
 export interface Contracts {
   NFT: ERC721Mock;
-  GMDerivative: GMPass;
-  GMDerivativeRestricted: GMPass;
-  GMDerivativeWithAllowance: GMPass;
-  GMDerivativeWithPrice: GMPass;
+  MockGMDerivative: GMPass;
+  MockGMDerivativeRestricted: GMPass;
+  MockGMDerivativeWithAllowance: GMPass;
+  MockGMDerivativeWithPrice: GMPass;
 }
 
 export interface User extends Contracts {
@@ -23,10 +23,19 @@ export const setupIntegration = deployments.createFixture(async ({ ethers }) => 
   const nftContract = (await nftContractFactory.deploy()) as ERC721Mock;
   const nftAddress = nftContract.address;
 
-  const gmPassFactory = await ethers.getContractFactory("MockGMPass");
-  const nDerivative = (await gmPassFactory.deploy("GMD", "GMD", nftAddress, false, 8888, 0, 0, 0)) as GMPass;
-  const nDerivativeRestricted = (await gmPassFactory.deploy("GMDR", "GMDR", nftAddress, true, 8888, 0, 0, 0)) as GMPass;
-  const nDerivativeWithAllowance = (await gmPassFactory.deploy(
+  const mockGMPassFactory = await ethers.getContractFactory("MockGMPass");
+  const mockGMDerivative = (await mockGMPassFactory.deploy("GMD", "GMD", nftAddress, false, 8888, 0, 0, 0)) as GMPass;
+  const mockGMDerivativeRestricted = (await mockGMPassFactory.deploy(
+    "GMDR",
+    "GMDR",
+    nftAddress,
+    true,
+    8888,
+    0,
+    0,
+    0,
+  )) as GMPass;
+  const mockGMDerivativeWithAllowance = (await mockGMPassFactory.deploy(
     "GMDA",
     "GMDA",
     nftAddress,
@@ -36,7 +45,7 @@ export const setupIntegration = deployments.createFixture(async ({ ethers }) => 
     0,
     0,
   )) as GMPass;
-  const nDerivativeWithPrice = (await gmPassFactory.deploy(
+  const mockGMDerivativeWithPrice = (await mockGMPassFactory.deploy(
     "GMD",
     "GMD",
     nftAddress,
@@ -48,10 +57,10 @@ export const setupIntegration = deployments.createFixture(async ({ ethers }) => 
   )) as GMPass;
 
   const contracts: Contracts = {
-    GMDerivative: nDerivative,
-    GMDerivativeRestricted: nDerivativeRestricted,
-    GMDerivativeWithAllowance: nDerivativeWithAllowance,
-    GMDerivativeWithPrice: nDerivativeWithPrice,
+    MockGMDerivative: mockGMDerivative,
+    MockGMDerivativeRestricted: mockGMDerivativeRestricted,
+    MockGMDerivativeWithAllowance: mockGMDerivativeWithAllowance,
+    MockGMDerivativeWithPrice: mockGMDerivativeWithPrice,
     NFT: nftContract,
   };
   const users: User[] = await setupUsers(await getUnnamedAccounts(), contracts);
