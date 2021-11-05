@@ -3,12 +3,12 @@ pragma solidity 0.8.6;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "../core/GMPassCore.sol";
+import "../core/GMsPassCore.sol";
 
 /**
  * @title GenerativemasksDerivative
  */
-contract GenerativemasksDerivative is GMPassCore {
+contract GenerativemasksDerivative is GMsPassCore {
 
     using Strings for uint256;
 
@@ -22,7 +22,7 @@ contract GenerativemasksDerivative is GMPassCore {
         address _generativemasks,
         address _derivedFrom
     )
-    GMPassCore(name, symbol, IERC721(_generativemasks), true, 10000, 10000, 0, 0)
+    GMsPassCore(name, symbol, IERC721(_generativemasks), true, 10000, 10000, 0, 0)
     {
         __baseURI = baseURI;
         derivedFrom = _derivedFrom;
@@ -37,11 +37,11 @@ contract GenerativemasksDerivative is GMPassCore {
 
         string memory baseURI = _baseURI();
 
-        if (MAX_GM_TOKEN_ID < tokenId) {
+        if (MAX_GMs_TOKEN_ID < tokenId) {
             return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
         }
 
-        uint256 maskNumber = (tokenId + METADATA_INDEX) % GM_SUPPLY_AMOUNT;
+        uint256 maskNumber = (tokenId + METADATA_INDEX) % GMs_SUPPLY_AMOUNT;
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, maskNumber.toString())) : "";
     }
 

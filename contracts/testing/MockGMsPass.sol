@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.4;
 
-import "../core/GMPassCore.sol";
+import "../core/GMsPassCore.sol";
 
-contract MockGMPass is GMPassCore {
+contract MockGMsPass is GMsPassCore {
     constructor(
         string memory name,
         string memory symbol,
@@ -14,7 +14,7 @@ contract MockGMPass is GMPassCore {
         uint256 priceForNHoldersInWei,
         uint256 priceForOpenMintInWei
     )
-    GMPassCore(
+    GMsPassCore(
         name,
         symbol,
         gm,

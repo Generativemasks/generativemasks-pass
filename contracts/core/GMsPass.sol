@@ -1,44 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
-import "./GMPassCore.sol";
+import "./GMsPassCore.sol";
 
 /**
- * @title GMPass contract
+ * @title GMsPass contract
  * @author wildmouse
- * @notice This contract provides basic functionalities to allow minting using the GMPass
+ * @notice This contract provides basic functionalities to allow minting using the GMsPass
  * @dev This is hardcoded to the correct address of the Generativemasks smart contract on the Ethereum mainnet
  *      This SHOULD be used for mainnet deployments
  */
-abstract contract GMPass is GMPassCore {
+abstract contract GMsPass is GMsPassCore {
 
     /**
-     * @notice Construct an GMPass instance
+     * @notice Construct an GMsPass instance
      * @param name Name of the token
      * @param symbol Symbol of the token
-     * @param onlyGMHolders True if only GMs tokens holders can mint this token
+     * @param onlyGMsHolders True if only GMss tokens holders can mint this token
      * @param maxTotalSupply Maximum number of tokens that can ever be minted
-     * @param reservedAllowance Number of tokens reserved for GMs token holders
-     * @param priceForGMHoldersInWei Price GMs token holders need to pay to mint
+     * @param reservedAllowance Number of tokens reserved for GMss token holders
+     * @param priceForGMsHoldersInWei Price GMss token holders need to pay to mint
      * @param priceForOpenMintInWei Price open minter need to pay to mint
      */
     constructor(
         string memory name,
         string memory symbol,
-        bool onlyGMHolders,
+        bool onlyGMsHolders,
         uint256 maxTotalSupply,
         uint16 reservedAllowance,
-        uint256 priceForGMHoldersInWei,
+        uint256 priceForGMsHoldersInWei,
         uint256 priceForOpenMintInWei
     )
-    GMPassCore(
+    GMsPassCore(
         name,
         symbol,
         IERC721(0x80416304142Fa37929f8A4Eee83eE7D2dAc12D7c),
-        onlyGMHolders,
+        onlyGMsHolders,
         maxTotalSupply,
         reservedAllowance,
-        priceForGMHoldersInWei,
+        priceForGMsHoldersInWei,
         priceForOpenMintInWei
     )
     {}

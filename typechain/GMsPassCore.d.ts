@@ -20,7 +20,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
+interface GMsPassCoreInterface extends ethers.utils.Interface {
   functions: {
     "GMs_SUPPLY_AMOUNT()": FunctionFragment;
     "MAX_GMs_TOKEN_ID()": FunctionFragment;
@@ -28,7 +28,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "METADATA_INDEX()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "derivedFrom()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
     "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
@@ -62,7 +61,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateBaseURI(string)": FunctionFragment;
     "withdrawAll()": FunctionFragment;
   };
 
@@ -87,10 +85,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "derivedFrom",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
@@ -209,10 +203,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "updateBaseURI",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "withdrawAll",
     values?: undefined
   ): string;
@@ -235,10 +225,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "derivedFrom",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -348,10 +334,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updateBaseURI",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "withdrawAll",
     data: BytesLike
   ): Result;
@@ -369,7 +351,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class GenerativemasksDerivative extends BaseContract {
+export class GMsPassCore extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -410,7 +392,7 @@ export class GenerativemasksDerivative extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: GenerativemasksDerivativeInterface;
+  interface: GMsPassCoreInterface;
 
   functions: {
     GMs_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -428,8 +410,6 @@ export class GenerativemasksDerivative extends BaseContract {
     ): Promise<ContractTransaction>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    derivedFrom(overrides?: CallOverrides): Promise<[string]>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -568,11 +548,6 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    updateBaseURI(
-      newBaseURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     withdrawAll(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -593,8 +568,6 @@ export class GenerativemasksDerivative extends BaseContract {
   ): Promise<ContractTransaction>;
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  derivedFrom(overrides?: CallOverrides): Promise<string>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -727,11 +700,6 @@ export class GenerativemasksDerivative extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  updateBaseURI(
-    newBaseURI: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   withdrawAll(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -752,8 +720,6 @@ export class GenerativemasksDerivative extends BaseContract {
     ): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    derivedFrom(overrides?: CallOverrides): Promise<string>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -881,8 +847,6 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateBaseURI(newBaseURI: string, overrides?: CallOverrides): Promise<void>;
-
     withdrawAll(overrides?: CallOverrides): Promise<void>;
   };
 
@@ -939,8 +903,6 @@ export class GenerativemasksDerivative extends BaseContract {
     ): Promise<BigNumber>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    derivedFrom(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -1079,11 +1041,6 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    updateBaseURI(
-      newBaseURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     withdrawAll(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1110,8 +1067,6 @@ export class GenerativemasksDerivative extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    derivedFrom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -1255,11 +1210,6 @@ export class GenerativemasksDerivative extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateBaseURI(
-      newBaseURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
