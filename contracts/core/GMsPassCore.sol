@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  */
 abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     uint256 public constant MAX_MULTI_MINT_AMOUNT = 32;
-    uint256 public constant GMs_SUPPLY_AMOUNT = 10000;
+    uint256 public constant GMS_SUPPLY_AMOUNT = 10000;
     uint256 public constant MAX_GMs_TOKEN_ID = 9999;
     uint256 public constant METADATA_INDEX = 3799;
 
@@ -31,11 +31,11 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @notice Construct an GMsPassCore instance
      * @param name Name of the token
      * @param symbol Symbol of the token
-     * @param gm_ Address of your GMss instance (only for testing)
-     * @param onlyGMsHolders_ True if only GMss tokens holders can mint this token
+     * @param gm_ Address of your GMs instance (only for testing)
+     * @param onlyGMsHolders_ True if only GMs tokens holders can mint this token
      * @param maxTotalSupply_ Maximum number of tokens that can ever be minted
-     * @param reservedAllowance_ Number of tokens reserved for GMss token holders
-     * @param priceForNHoldersInWei_ Price GMss token holders need to pay to mint
+     * @param reservedAllowance_ Number of tokens reserved for GMs token holders
+     * @param priceForNHoldersInWei_ Price GMs token holders need to pay to mint
      * @param priceForOpenMintInWei_ Price open minter need to pay to mint
      */
     constructor(
@@ -49,7 +49,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         uint256 priceForOpenMintInWei_
     ) ERC721(name, symbol) {
         require(maxTotalSupply_ > 0, "GMsPass:INVALID_SUPPLY");
-        require(!onlyGMsHolders_ || (onlyGMsHolders_ && maxTotalSupply_ <= GMs_SUPPLY_AMOUNT), "GMsPass:INVALID_SUPPLY");
+        require(!onlyGMsHolders_ || (onlyGMsHolders_ && maxTotalSupply_ <= GMS_SUPPLY_AMOUNT), "GMsPass:INVALID_SUPPLY");
         require(maxTotalSupply_ >= reservedAllowance_, "GMsPass:INVALID_ALLOWANCE");
         // If restricted to gm token holders we limit max total supply
         gm = gm_;
@@ -62,7 +62,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
 
     function getTokenIdFromMaskNumber(uint256 maskNumber) public pure returns (uint256) {
         require(maskNumber <= MAX_GMs_TOKEN_ID, "Invalid mask number");
-        return ((maskNumber + GMs_SUPPLY_AMOUNT) - METADATA_INDEX) % GMs_SUPPLY_AMOUNT;
+        return ((maskNumber + GMS_SUPPLY_AMOUNT) - METADATA_INDEX) % GMS_SUPPLY_AMOUNT;
     }
 
     function getTokenIdListFromMaskNumbers(uint256[] calldata maskNumbers) public pure returns (uint256[] memory) {
@@ -77,7 +77,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a GMss token holder to bulk mint tokens with id of their GMss tokens' id
+     * @notice Allow a GMs token holder to bulk mint tokens with id of their GMs tokens' id
      * @param maskNumbers numbers to be converted to token ids to be minted
      */
     function multiMintWithGMsMaskNumbers(uint256[] calldata maskNumbers) public payable virtual nonReentrant {
@@ -85,15 +85,15 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a GMss token holder to mint a token with one of their GMss token's id
-     * @param maskNumber numberto be converted to token id to be minted
+     * @notice Allow a GMs token holder to mint a token with one of their GMs token's id
+     * @param maskNumber number to be converted to token id to be minted
      */
     function mintWithGMsMaskNumber(uint256 maskNumber) public payable virtual nonReentrant {
         mintWithGMsTokenId(getTokenIdFromMaskNumber(maskNumber));
     }
 
     /**
-     * @notice Allow a GMss token holder to bulk mint tokens with id of their GMss tokens' id
+     * @notice Allow a GMs token holder to bulk mint tokens with id of their GMs tokens' id
      * @param tokenIds Ids to be minted
      */
     function multiMintWithGMsTokenIds(uint256[] memory tokenIds) public payable virtual nonReentrant {
@@ -122,7 +122,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Allow a GMss token holder to mint a token with one of their GMss token's id
+     * @notice Allow a GMs token holder to mint a token with one of their GMs token's id
      * @param tokenId Id to be minted
      */
     function mintWithGMsTokenId(uint256 tokenId) public payable virtual nonReentrant {
@@ -144,7 +144,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
 
     /**
      * @notice Allow anyone to mint a token with the supply id if this pass is unrestricted.
-     *         GMss token holders can use this function without using the GMss token holders allowance,
+     *         GMs token holders can use this function without using the GMs token holders allowance,
      *         this is useful when the allowance is fully utilized.
      * @param tokenId Id to be minted
      */
@@ -170,7 +170,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     }
 
     /**
-     * @notice Calculate the currently available number of reserved tokens for GMss token holders
+     * @notice Calculate the currently available number of reserved tokens for GMs token holders
      * @return Reserved mint available
      */
     function nHoldersMintsAvailable() external view returns (uint256) {

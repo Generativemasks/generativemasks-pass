@@ -41,7 +41,7 @@ contract GenerativemasksDerivative is GMsPassCore {
             return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
         }
 
-        uint256 maskNumber = (tokenId + METADATA_INDEX) % GMs_SUPPLY_AMOUNT;
+        uint256 maskNumber = (tokenId + METADATA_INDEX) % GMS_SUPPLY_AMOUNT;
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, maskNumber.toString())) : "";
     }
 

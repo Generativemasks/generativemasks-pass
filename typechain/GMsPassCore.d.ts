@@ -22,7 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface GMsPassCoreInterface extends ethers.utils.Interface {
   functions: {
-    "GMs_SUPPLY_AMOUNT()": FunctionFragment;
+    "GMS_SUPPLY_AMOUNT()": FunctionFragment;
     "MAX_GMs_TOKEN_ID()": FunctionFragment;
     "MAX_MULTI_MINT_AMOUNT()": FunctionFragment;
     "METADATA_INDEX()": FunctionFragment;
@@ -63,7 +63,7 @@ interface GMsPassCoreInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: "GMs_SUPPLY_AMOUNT",
+    functionFragment: "GMS_SUPPLY_AMOUNT",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -198,7 +198,7 @@ interface GMsPassCoreInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "GMs_SUPPLY_AMOUNT",
+    functionFragment: "GMS_SUPPLY_AMOUNT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -377,7 +377,7 @@ export class GMsPassCore extends BaseContract {
   interface: GMsPassCoreInterface;
 
   functions: {
-    GMs_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -524,7 +524,7 @@ export class GMsPassCore extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  GMs_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+  GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -665,7 +665,7 @@ export class GMsPassCore extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    GMs_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -837,7 +837,7 @@ export class GMsPassCore extends BaseContract {
   };
 
   estimateGas: {
-    GMs_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -985,7 +985,7 @@ export class GMsPassCore extends BaseContract {
   };
 
   populateTransaction: {
-    GMs_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

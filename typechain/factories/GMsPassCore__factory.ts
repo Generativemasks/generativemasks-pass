@@ -103,7 +103,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GMs_SUPPLY_AMOUNT",
+    name: "GMS_SUPPLY_AMOUNT",
     outputs: [
       {
         internalType: "uint256",

@@ -16,10 +16,10 @@ abstract contract GMsPass is GMsPassCore {
      * @notice Construct an GMsPass instance
      * @param name Name of the token
      * @param symbol Symbol of the token
-     * @param onlyGMsHolders True if only GMss tokens holders can mint this token
+     * @param onlyGMsHolders True if only GMs tokens holders can mint this token
      * @param maxTotalSupply Maximum number of tokens that can ever be minted
-     * @param reservedAllowance Number of tokens reserved for GMss token holders
-     * @param priceForGMsHoldersInWei Price GMss token holders need to pay to mint
+     * @param reservedAllowance Number of tokens reserved for GMs token holders
+     * @param priceForGMsHoldersInWei Price GMs token holders need to pay to mint
      * @param priceForOpenMintInWei Price open minter need to pay to mint
      */
     constructor(
