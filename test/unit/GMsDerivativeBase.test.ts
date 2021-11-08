@@ -27,12 +27,6 @@ describe("GMsDerivativeBase", function () {
     });
   });
 
-  describe("mintedCount", () => {
-    it("incremented by mintWithGMsTokenId");
-
-    it("incremented by multiMintWithGMsTokenIds");
-  });
-
   describe("maxTokenId", () => {
     it("returns 9999", async () => {
       expect((await contracts.GMsDerivative.maxTokenId()).toNumber()).to.equal(9999);
@@ -59,6 +53,18 @@ describe("GMsDerivativeBase", function () {
         expect(await contracts.GMsDerivative.ownerOf(1)).to.equal(users[0].address);
       });
 
+      it("token id = 6200", async () => {
+        await users[0].NFT.claim(6200);
+        await users[0].GMsDerivative.mintWithGMsTokenId(6200);
+        expect(await contracts.GMsDerivative.ownerOf(6200)).to.equal(users[0].address);
+      });
+
+      it("token id = 6201", async () => {
+        await users[0].NFT.claim(6201);
+        await users[0].GMsDerivative.mintWithGMsTokenId(6201);
+        expect(await contracts.GMsDerivative.ownerOf(6201)).to.equal(users[0].address);
+      });
+
       it("token id = 9998", async () => {
         await users[0].NFT.claim(9998);
         await users[0].GMsDerivative.mintWithGMsTokenId(9998);
@@ -70,10 +76,6 @@ describe("GMsDerivativeBase", function () {
         await users[0].GMsDerivative.mintWithGMsTokenId(9999);
         expect(await contracts.GMsDerivative.ownerOf(9999)).to.equal(users[0].address);
       });
-
-      it("increment mintedCount");
-
-      it("claim all tokens");
 
       it("throws an error if msg.sender has no token", async () => {
         await expect(users[0].GMsDerivative.mintWithGMsTokenId(0)).to.be.revertedWith(
@@ -98,6 +100,18 @@ describe("GMsDerivativeBase", function () {
         await users[0].NFT.claim(1);
         await users[0].GMsDerivative.mintWithGMsMaskNumber(3800);
         expect(await contracts.GMsDerivative.ownerOf(1)).to.equal(users[0].address);
+      });
+
+      it("mask number = 6200", async () => {
+        await users[0].NFT.claim(6200);
+        await users[0].GMsDerivative.mintWithGMsMaskNumber(9999);
+        expect(await contracts.GMsDerivative.ownerOf(6200)).to.equal(users[0].address);
+      });
+
+      it("mask number = 0", async () => {
+        await users[0].NFT.claim(6201);
+        await users[0].GMsDerivative.mintWithGMsMaskNumber(0);
+        expect(await contracts.GMsDerivative.ownerOf(6201)).to.equal(users[0].address);
       });
 
       it("mask number = 9998", async () => {
@@ -127,22 +141,27 @@ describe("GMsDerivativeBase", function () {
     });
   });
 
-  describe("multiMintWithGMsTokenIds", () => {});
+  describe("multiMintWithGMsTokenIds", () => {
+    it("can mint 32 tokens ", async () => {
+      const tokenIds: number[] = [];
+      await Promise.all(
+        [...Array(32)].map(async (_, i) => {
+          tokenIds.push(i);
+          return users[0].NFT.claim(i);
+        }),
+      );
+
+      await users[0].GMsDerivative.multiMintWithGMsTokenIds(tokenIds);
+      expect((await contracts.GMsDerivative.balanceOf(users[0].address)).toNumber()).to.equal(32);
+    });
+  });
 
   describe("mint", () => {
-    it("always reverted");
-  });
-
-  describe("gmsHoldresMintsAvailable", () => {
-    it("returns 10000");
-
-    it("returns decremented value after minted ");
-
-    it("returns 0 after all tokens are minted");
-  });
-
-  describe("openMintsAvailable", () => {
-    it("returns 0");
+    it("always reverted", async () => {
+      await users[1].NFT.claim(10000);
+      await expect(users[0].GMsDerivative.mint(10000)).to.be.revertedWith("GMsPass:OPEN_MINTING_DISABLED");
+      await expect(users[0].GMsDerivative.mint(10001)).to.be.revertedWith("GMsPass:OPEN_MINTING_DISABLED");
+    });
   });
 
   describe("tokenURI", () => {
@@ -156,6 +175,18 @@ describe("GMsDerivativeBase", function () {
       await users[0].NFT.claim(1);
       await users[0].GMsDerivative.mintWithGMsMaskNumber(3800);
       expect(await contracts.GMsDerivative.tokenURI(1)).to.equal("https://example.com/3800");
+    });
+
+    it("suffix is 9999 when token id is 6200", async () => {
+      await users[0].NFT.claim(6200);
+      await users[0].GMsDerivative.mintWithGMsMaskNumber(9999);
+      expect(await contracts.GMsDerivative.tokenURI(6200)).to.equal("https://example.com/9999");
+    });
+
+    it("suffix is 0 when token id is 6201", async () => {
+      await users[0].NFT.claim(6201);
+      await users[0].GMsDerivative.mintWithGMsMaskNumber(0);
+      expect(await contracts.GMsDerivative.tokenURI(6201)).to.equal("https://example.com/0");
     });
 
     it("suffix is 3797 when token id is 9998", async () => {
@@ -196,6 +227,19 @@ describe("GMsDerivativeBase", function () {
       await expect(users[0].GMsDerivative.updateBaseURI("https://example.com/updated/")).to.be.revertedWith(
         "Ownable: caller is not the owner",
       );
+    });
+  });
+
+  xdescribe("scenario", () => {
+    it("mint all", async () => {
+      for (let i = 0; i < 10000; i++) {
+        if (i % 100 === 0) {
+          console.log(i);
+        }
+        await users[0].NFT.claim(i);
+        await users[0].GMsDerivative.mintWithGMsTokenId(i);
+      }
+      expect((await contracts.GMsDerivative.balanceOf(users[0].address)).toNumber()).to.equal(10000);
     });
   });
 });

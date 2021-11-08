@@ -129,6 +129,7 @@ const config: HardhatUserConfig = {
     runOnCompile: false,
     disambiguatePaths: false,
   },
+  mocha: {},
 };
 
 export default config;
