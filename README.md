@@ -21,7 +21,7 @@ Smart contract are written in Solidity and managed via hardhat.
 1. deploy running command `yarn hardhat --network mainnet deploy --gasprice "170000000000"`
 1. deploy etherscan verification `yarn hardhat --network mainnet etherscan-verify`
 
-## N Pass Configuration
+## Generativemasks Pass Configuration
 
 ### onlyGMsHolders
 
