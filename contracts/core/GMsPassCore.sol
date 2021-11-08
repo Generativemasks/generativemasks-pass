@@ -108,6 +108,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         require(msg.value == priceForNHoldersInWei * maxTokensToMint, "GMsPass:INVALID_PRICE");
         // To avoid wasting gas we want to check all preconditions beforehand
         for (uint256 i = 0; i < maxTokensToMint; i++) {
+            require(tokenIds[i] <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_ID");
             require(gm.ownerOf(tokenIds[i]) == msg.sender, "GMsPass:INVALID_OWNER");
         }
 
@@ -131,6 +132,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
             (reservedAllowance == 0 && mintedCount < maxTotalSupply) || reserveMinted < reservedAllowance,
             "GMsPass:MAX_ALLOCATION_REACHED"
         );
+        require(tokenId <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_ID");
         require(gm.ownerOf(tokenId) == msg.sender, "GMsPass:INVALID_OWNER");
         require(msg.value == priceForNHoldersInWei, "GMsPass:INVALID_PRICE");
 
