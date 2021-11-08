@@ -13,17 +13,17 @@ describe("GMsDerivativeBase", function () {
 
   describe("gmHoldersMintsAvailable", () => {
     it("returns 10000 initially", async () => {
-      expect(await contracts.GMsDerivative.nHoldersMintsAvailable()).to.equal(10000);
+      expect(await contracts.GMsDerivative.gmsHoldresMintsAvailable()).to.equal(10000);
     });
 
     it("returns decremented allowance after minted", async () => {
       await users[0].NFT.claim(0);
       await users[0].GMsDerivative.mintWithGMsTokenId(0);
-      expect(await contracts.GMsDerivative.nHoldersMintsAvailable()).to.equal(9999);
+      expect(await contracts.GMsDerivative.gmsHoldresMintsAvailable()).to.equal(9999);
 
       await users[0].NFT.claim(1);
       await users[0].GMsDerivative.multiMintWithGMsTokenIds([1]);
-      expect(await contracts.GMsDerivative.nHoldersMintsAvailable()).to.equal(9998);
+      expect(await contracts.GMsDerivative.gmsHoldresMintsAvailable()).to.equal(9998);
     });
   });
 
@@ -133,7 +133,7 @@ describe("GMsDerivativeBase", function () {
     it("always reverted");
   });
 
-  describe("nHoldersMintsAvailable", () => {
+  describe("gmsHoldresMintsAvailable", () => {
     it("returns 10000");
 
     it("returns decremented value after minted ");

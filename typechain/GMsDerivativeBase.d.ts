@@ -20,33 +20,35 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface MockGMPassInterface extends ethers.utils.Interface {
+interface GMsDerivativeBaseInterface extends ethers.utils.Interface {
   functions: {
-    "GM_SUPPLY_AMOUNT()": FunctionFragment;
-    "MAX_GM_TOKEN_ID()": FunctionFragment;
+    "GMS_SUPPLY_AMOUNT()": FunctionFragment;
+    "MAX_GMs_TOKEN_ID()": FunctionFragment;
     "MAX_MULTI_MINT_AMOUNT()": FunctionFragment;
     "METADATA_INDEX()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "derivedFrom()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
     "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
     "gm()": FunctionFragment;
+    "gmsHoldresMintsAvailable()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokenId()": FunctionFragment;
     "maxTotalSupply()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
-    "mintWithGMMaskNumber(uint256)": FunctionFragment;
-    "mintWithGMTokenId(uint256)": FunctionFragment;
-    "multiMintWithGMMaskNumbers(uint256[])": FunctionFragment;
-    "multiMintWithGMTokenIds(uint256[])": FunctionFragment;
-    "nHoldersMintsAvailable()": FunctionFragment;
+    "mintWithGMsMaskNumber(uint256)": FunctionFragment;
+    "mintWithGMsTokenId(uint256)": FunctionFragment;
+    "mintedCount()": FunctionFragment;
+    "multiMintWithGMsMaskNumbers(uint256[])": FunctionFragment;
+    "multiMintWithGMsTokenIds(uint256[])": FunctionFragment;
     "name()": FunctionFragment;
-    "onlyGMHolders()": FunctionFragment;
+    "onlyGMsHolders()": FunctionFragment;
     "openMintsAvailable()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "priceForNHoldersInWei()": FunctionFragment;
+    "priceForGMsHoldersInWei()": FunctionFragment;
     "priceForOpenMintInWei()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "reserveMinted()": FunctionFragment;
@@ -55,21 +57,19 @@ interface MockGMPassInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tokenByIndex(uint256)": FunctionFragment;
-    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
-    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateBaseURI(string)": FunctionFragment;
     "withdrawAll()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "GM_SUPPLY_AMOUNT",
+    functionFragment: "GMS_SUPPLY_AMOUNT",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "MAX_GM_TOKEN_ID",
+    functionFragment: "MAX_GMs_TOKEN_ID",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -86,6 +86,10 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "derivedFrom",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
@@ -98,6 +102,10 @@ interface MockGMPassInterface extends ethers.utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: "gm", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "gmsHoldresMintsAvailable",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
@@ -112,28 +120,28 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "mintWithGMMaskNumber",
+    functionFragment: "mintWithGMsMaskNumber",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintWithGMTokenId",
+    functionFragment: "mintWithGMsTokenId",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "multiMintWithGMMaskNumbers",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multiMintWithGMTokenIds",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nHoldersMintsAvailable",
+    functionFragment: "mintedCount",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multiMintWithGMsMaskNumbers",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multiMintWithGMsTokenIds",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "onlyGMHolders",
+    functionFragment: "onlyGMsHolders",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -146,7 +154,7 @@ interface MockGMPassInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "priceForNHoldersInWei",
+    functionFragment: "priceForGMsHoldersInWei",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -179,20 +187,8 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
@@ -203,16 +199,20 @@ interface MockGMPassInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "updateBaseURI",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdrawAll",
     values?: undefined
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "GM_SUPPLY_AMOUNT",
+    functionFragment: "GMS_SUPPLY_AMOUNT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "MAX_GM_TOKEN_ID",
+    functionFragment: "MAX_GMs_TOKEN_ID",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -225,6 +225,10 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "derivedFrom",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -239,6 +243,10 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "gm", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "gmsHoldresMintsAvailable",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
@@ -249,28 +257,28 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "mintWithGMMaskNumber",
+    functionFragment: "mintWithGMsMaskNumber",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "mintWithGMTokenId",
+    functionFragment: "mintWithGMsTokenId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "multiMintWithGMMaskNumbers",
+    functionFragment: "mintedCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "multiMintWithGMTokenIds",
+    functionFragment: "multiMintWithGMsMaskNumbers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "nHoldersMintsAvailable",
+    functionFragment: "multiMintWithGMsTokenIds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "onlyGMHolders",
+    functionFragment: "onlyGMsHolders",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -280,7 +288,7 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "priceForNHoldersInWei",
+    functionFragment: "priceForGMsHoldersInWei",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -312,25 +320,17 @@ interface MockGMPassInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateBaseURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -351,7 +351,7 @@ interface MockGMPassInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class MockGMPass extends BaseContract {
+export class GMsDerivativeBase extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -392,12 +392,12 @@ export class MockGMPass extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: MockGMPassInterface;
+  interface: GMsDerivativeBaseInterface;
 
   functions: {
-    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -410,6 +410,8 @@ export class MockGMPass extends BaseContract {
     ): Promise<ContractTransaction>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    derivedFrom(overrides?: CallOverrides): Promise<[string]>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -428,6 +430,8 @@ export class MockGMPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<[string]>;
 
+    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -443,31 +447,31 @@ export class MockGMPass extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    mintWithGMMaskNumber(
+    mintWithGMsMaskNumber(
       maskNumber: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    mintWithGMTokenId(
+    mintWithGMsTokenId(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    multiMintWithGMMaskNumbers(
+    mintedCount(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    multiMintWithGMTokenIds(
+    multiMintWithGMsTokenIds(
       tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    nHoldersMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    onlyGMHolders(overrides?: CallOverrides): Promise<[boolean]>;
+    onlyGMsHolders(overrides?: CallOverrides): Promise<[boolean]>;
 
     openMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -478,7 +482,7 @@ export class MockGMPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    priceForNHoldersInWei(overrides?: CallOverrides): Promise<[BigNumber]>;
+    priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     priceForOpenMintInWei(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -518,23 +522,10 @@ export class MockGMPass extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferFrom(
       from: string,
@@ -548,14 +539,19 @@ export class MockGMPass extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    updateBaseURI(
+      newBaseURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     withdrawAll(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+  GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
-  MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
+  MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -568,6 +564,8 @@ export class MockGMPass extends BaseContract {
   ): Promise<ContractTransaction>;
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  derivedFrom(overrides?: CallOverrides): Promise<string>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -586,6 +584,8 @@ export class MockGMPass extends BaseContract {
 
   gm(overrides?: CallOverrides): Promise<string>;
 
+  gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -601,31 +601,31 @@ export class MockGMPass extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  mintWithGMMaskNumber(
+  mintWithGMsMaskNumber(
     maskNumber: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  mintWithGMTokenId(
+  mintWithGMsTokenId(
     tokenId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  multiMintWithGMMaskNumbers(
+  mintedCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  multiMintWithGMsMaskNumbers(
     maskNumbers: BigNumberish[],
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  multiMintWithGMTokenIds(
+  multiMintWithGMsTokenIds(
     tokenIds: BigNumberish[],
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  nHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
-  onlyGMHolders(overrides?: CallOverrides): Promise<boolean>;
+  onlyGMsHolders(overrides?: CallOverrides): Promise<boolean>;
 
   openMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -633,7 +633,7 @@ export class MockGMPass extends BaseContract {
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  priceForNHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
+  priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
   priceForOpenMintInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -673,20 +673,7 @@ export class MockGMPass extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -700,14 +687,19 @@ export class MockGMPass extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateBaseURI(
+    newBaseURI: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   withdrawAll(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
-    MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
+    MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -720,6 +712,8 @@ export class MockGMPass extends BaseContract {
     ): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    derivedFrom(overrides?: CallOverrides): Promise<string>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -738,6 +732,8 @@ export class MockGMPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<string>;
 
+    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -750,31 +746,31 @@ export class MockGMPass extends BaseContract {
 
     mint(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    mintWithGMMaskNumber(
+    mintWithGMsMaskNumber(
       maskNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    mintWithGMTokenId(
+    mintWithGMsTokenId(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    multiMintWithGMMaskNumbers(
+    mintedCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    multiMintWithGMTokenIds(
+    multiMintWithGMsTokenIds(
       tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    nHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
-    onlyGMHolders(overrides?: CallOverrides): Promise<boolean>;
+    onlyGMsHolders(overrides?: CallOverrides): Promise<boolean>;
 
     openMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -782,7 +778,7 @@ export class MockGMPass extends BaseContract {
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    priceForNHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
+    priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceForOpenMintInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -820,20 +816,7 @@ export class MockGMPass extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -846,6 +829,8 @@ export class MockGMPass extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateBaseURI(newBaseURI: string, overrides?: CallOverrides): Promise<void>;
 
     withdrawAll(overrides?: CallOverrides): Promise<void>;
   };
@@ -888,9 +873,9 @@ export class MockGMPass extends BaseContract {
   };
 
   estimateGas: {
-    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
-    MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
+    MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_MULTI_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -903,6 +888,8 @@ export class MockGMPass extends BaseContract {
     ): Promise<BigNumber>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    derivedFrom(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -921,6 +908,8 @@ export class MockGMPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<BigNumber>;
 
+    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -936,31 +925,31 @@ export class MockGMPass extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    mintWithGMMaskNumber(
+    mintWithGMsMaskNumber(
       maskNumber: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    mintWithGMTokenId(
+    mintWithGMsTokenId(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    multiMintWithGMMaskNumbers(
+    mintedCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    multiMintWithGMTokenIds(
+    multiMintWithGMsTokenIds(
       tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    nHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    onlyGMHolders(overrides?: CallOverrides): Promise<BigNumber>;
+    onlyGMsHolders(overrides?: CallOverrides): Promise<BigNumber>;
 
     openMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -971,7 +960,7 @@ export class MockGMPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    priceForNHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
+    priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceForOpenMintInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1011,23 +1000,10 @@ export class MockGMPass extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1041,15 +1017,20 @@ export class MockGMPass extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    updateBaseURI(
+      newBaseURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     withdrawAll(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    GM_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    GMS_SUPPLY_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    MAX_GM_TOKEN_ID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MAX_GMs_TOKEN_ID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MAX_MULTI_MINT_AMOUNT(
       overrides?: CallOverrides
@@ -1068,6 +1049,8 @@ export class MockGMPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    derivedFrom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1085,6 +1068,10 @@ export class MockGMPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    gmsHoldresMintsAvailable(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1100,33 +1087,31 @@ export class MockGMPass extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    mintWithGMMaskNumber(
+    mintWithGMsMaskNumber(
       maskNumber: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    mintWithGMTokenId(
+    mintWithGMsTokenId(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    multiMintWithGMMaskNumbers(
+    mintedCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    multiMintWithGMsMaskNumbers(
       maskNumbers: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    multiMintWithGMTokenIds(
+    multiMintWithGMsTokenIds(
       tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    nHoldersMintsAvailable(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    onlyGMHolders(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    onlyGMsHolders(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     openMintsAvailable(
       overrides?: CallOverrides
@@ -1139,7 +1124,7 @@ export class MockGMPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    priceForNHoldersInWei(
+    priceForGMsHoldersInWei(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1183,23 +1168,10 @@ export class MockGMPass extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,
@@ -1210,6 +1182,11 @@ export class MockGMPass extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateBaseURI(
+      newBaseURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

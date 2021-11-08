@@ -22,7 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface GMsPassInterface extends ethers.utils.Interface {
   functions: {
-    "GM_SUPPLY_AMOUNT()": FunctionFragment;
+    "GMS_SUPPLY_AMOUNT()": FunctionFragment;
     "MAX_GMs_TOKEN_ID()": FunctionFragment;
     "MAX_MULTI_MINT_AMOUNT()": FunctionFragment;
     "METADATA_INDEX()": FunctionFragment;
@@ -32,6 +32,7 @@ interface GMsPassInterface extends ethers.utils.Interface {
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
     "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
     "gm()": FunctionFragment;
+    "gmsHoldresMintsAvailable()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokenId()": FunctionFragment;
     "maxTotalSupply()": FunctionFragment;
@@ -41,13 +42,12 @@ interface GMsPassInterface extends ethers.utils.Interface {
     "mintedCount()": FunctionFragment;
     "multiMintWithGMsMaskNumbers(uint256[])": FunctionFragment;
     "multiMintWithGMsTokenIds(uint256[])": FunctionFragment;
-    "nHoldersMintsAvailable()": FunctionFragment;
     "name()": FunctionFragment;
     "onlyGMsHolders()": FunctionFragment;
     "openMintsAvailable()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "priceForNHoldersInWei()": FunctionFragment;
+    "priceForGMsHoldersInWei()": FunctionFragment;
     "priceForOpenMintInWei()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "reserveMinted()": FunctionFragment;
@@ -97,6 +97,10 @@ interface GMsPassInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "gm", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "gmsHoldresMintsAvailable",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
@@ -129,10 +133,6 @@ interface GMsPassInterface extends ethers.utils.Interface {
     functionFragment: "multiMintWithGMsTokenIds",
     values: [BigNumberish[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "nHoldersMintsAvailable",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "onlyGMsHolders",
@@ -148,7 +148,7 @@ interface GMsPassInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "priceForNHoldersInWei",
+    functionFragment: "priceForGMsHoldersInWei",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -229,6 +229,10 @@ interface GMsPassInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "gm", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "gmsHoldresMintsAvailable",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
@@ -258,10 +262,6 @@ interface GMsPassInterface extends ethers.utils.Interface {
     functionFragment: "multiMintWithGMsTokenIds",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "nHoldersMintsAvailable",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onlyGMsHolders",
@@ -274,7 +274,7 @@ interface GMsPassInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "priceForNHoldersInWei",
+    functionFragment: "priceForGMsHoldersInWei",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -410,6 +410,8 @@ export class GMsPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<[string]>;
 
+    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -447,8 +449,6 @@ export class GMsPass extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    nHoldersMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
     onlyGMsHolders(overrides?: CallOverrides): Promise<[boolean]>;
@@ -462,7 +462,7 @@ export class GMsPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    priceForNHoldersInWei(overrides?: CallOverrides): Promise<[BigNumber]>;
+    priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     priceForOpenMintInWei(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -557,6 +557,8 @@ export class GMsPass extends BaseContract {
 
   gm(overrides?: CallOverrides): Promise<string>;
 
+  gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -594,8 +596,6 @@ export class GMsPass extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  nHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   onlyGMsHolders(overrides?: CallOverrides): Promise<boolean>;
@@ -606,7 +606,7 @@ export class GMsPass extends BaseContract {
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  priceForNHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
+  priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
   priceForOpenMintInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -698,6 +698,8 @@ export class GMsPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<string>;
 
+    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -732,8 +734,6 @@ export class GMsPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    nHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     onlyGMsHolders(overrides?: CallOverrides): Promise<boolean>;
@@ -744,7 +744,7 @@ export class GMsPass extends BaseContract {
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    priceForNHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
+    priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceForOpenMintInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -870,6 +870,8 @@ export class GMsPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<BigNumber>;
 
+    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -907,8 +909,6 @@ export class GMsPass extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    nHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     onlyGMsHolders(overrides?: CallOverrides): Promise<BigNumber>;
@@ -922,7 +922,7 @@ export class GMsPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    priceForNHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
+    priceForGMsHoldersInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceForOpenMintInWei(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1023,6 +1023,10 @@ export class GMsPass extends BaseContract {
 
     gm(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    gmsHoldresMintsAvailable(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1060,10 +1064,6 @@ export class GMsPass extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    nHoldersMintsAvailable(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     onlyGMsHolders(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1079,7 +1079,7 @@ export class GMsPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    priceForNHoldersInWei(
+    priceForGMsHoldersInWei(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

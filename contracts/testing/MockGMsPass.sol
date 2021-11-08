@@ -11,7 +11,7 @@ contract MockGMsPass is GMsPassCore {
         bool onlyNHolders,
         uint256 maxTotalSupply,
         uint16 reservedAllowance,
-        uint256 priceForNHoldersInWei,
+        uint256 priceForGMsHoldersInWei,
         uint256 priceForOpenMintInWei
     )
     GMsPassCore(
@@ -21,7 +21,7 @@ contract MockGMsPass is GMsPassCore {
         onlyNHolders,
         maxTotalSupply,
         reservedAllowance,
-        priceForNHoldersInWei,
+        priceForGMsHoldersInWei,
         priceForOpenMintInWei
     )
     {}

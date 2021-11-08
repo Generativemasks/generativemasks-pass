@@ -261,6 +261,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "gmsHoldresMintsAvailable",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -390,19 +403,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "nHoldersMintsAvailable",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "name",
     outputs: [
       {
@@ -474,7 +474,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "priceForNHoldersInWei",
+    name: "priceForGMsHoldersInWei",
     outputs: [
       {
         internalType: "uint256",

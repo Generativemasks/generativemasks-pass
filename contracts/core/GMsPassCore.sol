@@ -23,7 +23,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     uint16 public immutable reservedAllowance;
     uint16 public reserveMinted;
     uint256 public immutable maxTotalSupply;
-    uint256 public immutable priceForNHoldersInWei;
+    uint256 public immutable priceForGMsHoldersInWei;
     uint256 public immutable priceForOpenMintInWei;
     uint256 public mintedCount;
 
@@ -35,7 +35,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @param onlyGMsHolders_ True if only GMs tokens holders can mint this token
      * @param maxTotalSupply_ Maximum number of tokens that can ever be minted
      * @param reservedAllowance_ Number of tokens reserved for GMs token holders
-     * @param priceForNHoldersInWei_ Price GMs token holders need to pay to mint
+     * @param priceForGMsHoldersInWei_ Price GMs token holders need to pay to mint
      * @param priceForOpenMintInWei_ Price open minter need to pay to mint
      */
     constructor(
@@ -45,7 +45,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         bool onlyGMsHolders_,
         uint256 maxTotalSupply_,
         uint16 reservedAllowance_,
-        uint256 priceForNHoldersInWei_,
+        uint256 priceForGMsHoldersInWei_,
         uint256 priceForOpenMintInWei_
     ) ERC721(name, symbol) {
         require(maxTotalSupply_ > 0, "GMsPass:INVALID_SUPPLY");
@@ -56,7 +56,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         onlyGMsHolders = onlyGMsHolders_;
         maxTotalSupply = maxTotalSupply_;
         reservedAllowance = reservedAllowance_;
-        priceForNHoldersInWei = priceForNHoldersInWei_;
+        priceForGMsHoldersInWei = priceForGMsHoldersInWei_;
         priceForOpenMintInWei = priceForOpenMintInWei_;
     }
 
@@ -105,7 +105,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
             reserveMinted + maxTokensToMint <= reservedAllowance,
             "GMsPass:MAX_ALLOCATION_REACHED"
         );
-        require(msg.value == priceForNHoldersInWei * maxTokensToMint, "GMsPass:INVALID_PRICE");
+        require(msg.value == priceForGMsHoldersInWei * maxTokensToMint, "GMsPass:INVALID_PRICE");
         // To avoid wasting gas we want to check all preconditions beforehand
         for (uint256 i = 0; i < maxTokensToMint; i++) {
             require(tokenIds[i] <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_ID");
@@ -134,7 +134,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         );
         require(tokenId <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_ID");
         require(gm.ownerOf(tokenId) == msg.sender, "GMsPass:INVALID_OWNER");
-        require(msg.value == priceForNHoldersInWei, "GMsPass:INVALID_PRICE");
+        require(msg.value == priceForGMsHoldersInWei, "GMsPass:INVALID_PRICE");
 
         // If reserved allowance is active we track mints count
         if (reservedAllowance > 0) {
@@ -175,7 +175,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @notice Calculate the currently available number of reserved tokens for GMs token holders
      * @return Reserved mint available
      */
-    function nHoldersMintsAvailable() external view returns (uint256) {
+    function gmsHoldresMintsAvailable() external view returns (uint256) {
         return reservedAllowance - reserveMinted;
     }
 

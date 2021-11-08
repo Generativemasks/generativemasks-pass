@@ -228,7 +228,7 @@ describe("GMsPass", function () {
   describe("Price", async function () {
     it("requires n token holder to pay correct amount", async function () {
       await deployer.NFT.claim(1000);
-      const price = await contracts.MockGMsDerivativeWithPrice.priceForNHoldersInWei();
+      const price = await contracts.MockGMsDerivativeWithPrice.priceForGMsHoldersInWei();
       await expect(
         deployer.MockGMsDerivativeWithPrice.mintWithGMsTokenId(1000, { value: price.sub(1) }),
       ).to.be.revertedWith("GMsPass:INVALID_PRICE");
@@ -291,7 +291,7 @@ describe("GMsPass", function () {
       expect(await contracts.NFT.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(2)).to.be.equals(deployer.address);
       expect(await contracts.NFT.ownerOf(3)).to.be.equals(deployer.address);
-      const price = await contracts.MockGMsDerivativeWithPrice.priceForNHoldersInWei();
+      const price = await contracts.MockGMsDerivativeWithPrice.priceForGMsHoldersInWei();
       await deployer.MockGMsDerivativeWithPrice.multiMintWithGMsTokenIds([1, 2, 3], { value: price.mul(3) });
       expect(await contracts.MockGMsDerivativeWithPrice.ownerOf(1)).to.be.equals(deployer.address);
       expect(await contracts.MockGMsDerivativeWithPrice.ownerOf(2)).to.be.equals(deployer.address);
@@ -315,7 +315,7 @@ describe("GMsPass", function () {
       ).to.be.revertedWith("GMsPass:MAX_ALLOCATION_REACHED");
     });
     it("reverts multi mint if price wrong", async function () {
-      const price = await contracts.MockGMsDerivativeWithPrice.priceForNHoldersInWei();
+      const price = await contracts.MockGMsDerivativeWithPrice.priceForGMsHoldersInWei();
       await expect(
         deployer.MockGMsDerivativeWithPrice.multiMintWithGMsTokenIds([1, 2, 3, 4, 5], { value: price.mul(3) }),
       ).to.be.revertedWith("GMsPass:INVALID_PRICE");

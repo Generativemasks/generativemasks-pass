@@ -1,13 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "../core/GMsPassCore.sol";
 
-/**
- * @title GenerativemasksDerivative
- */
 contract GenerativemasksDerivative is GMsPassCore {
 
     using Strings for uint256;
@@ -48,5 +44,4 @@ contract GenerativemasksDerivative is GMsPassCore {
     function updateBaseURI(string calldata newBaseURI) external onlyOwner {
         __baseURI = newBaseURI;
     }
-
 }
