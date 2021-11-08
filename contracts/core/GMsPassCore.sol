@@ -61,7 +61,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     }
 
     function getTokenIdFromMaskNumber(uint256 maskNumber) public pure returns (uint256) {
-        require(maskNumber <= MAX_GMs_TOKEN_ID, "Invalid mask number");
+        require(maskNumber <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_NUMBER");
         return ((maskNumber + GMS_SUPPLY_AMOUNT) - METADATA_INDEX) % GMS_SUPPLY_AMOUNT;
     }
 
@@ -69,7 +69,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         uint256[] memory tokenIdList = new uint256[](maskNumbers.length);
 
         for (uint256 i = 0; i < maskNumbers.length; i++) {
-            require(maskNumbers[i] <= MAX_GMs_TOKEN_ID, "Invalid mask number");
+            require(maskNumbers[i] <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_NUMBER");
             tokenIdList[i] = getTokenIdFromMaskNumber(maskNumbers[i]);
         }
 
