@@ -3,7 +3,7 @@
 ## Intro
 
 This is a start pack to build NFTs using the GMsPass from the Generativemasks project.
-It is thought to give you all the tools to build and deploy a "n" enabled NFT.
+It is thought to give you all the tools to build and deploy a NFT derived from Generativemasks.
 Throughout the codebase there are `TODO` comments which help customise your code (use the find function to find them)
 
 ## Smart Contracts
