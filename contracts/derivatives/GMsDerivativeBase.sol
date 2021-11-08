@@ -25,7 +25,7 @@ contract GMsDerivativeBase is GMsPassCore {
         true,
         10000,
         10000,
-        0, 
+        0,
         0
     )
     {
@@ -41,10 +41,6 @@ contract GMsDerivativeBase is GMsPassCore {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
         string memory baseURI = _baseURI();
-        if (MAX_GMs_TOKEN_ID < tokenId) {
-            return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
-        }
-
         uint256 maskNumber = (tokenId + METADATA_INDEX) % GMS_SUPPLY_AMOUNT;
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, maskNumber.toString())) : "";
     }
