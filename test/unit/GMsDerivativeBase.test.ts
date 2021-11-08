@@ -169,11 +169,33 @@ describe("GMsDerivativeBase", function () {
       await users[0].GMsDerivative.mintWithGMsMaskNumber(3798);
       expect(await contracts.GMsDerivative.tokenURI(9999)).to.equal("https://example.com/3798");
     });
+
+    it("throws an error if token does not exist yet", async () => {
+      await expect(contracts.GMsDerivative.tokenURI(0)).to.be.revertedWith(
+        "ERC721Metadata: URI query for nonexistent token",
+      );
+
+      await users[0].NFT.claim(0);
+      await users[0].GMsDerivative.mintWithGMsMaskNumber(3799);
+      await expect(await contracts.GMsDerivative.tokenURI(0)).to.equal("https://example.com/3799");
+    });
   });
 
   describe("updateBaseURI", () => {
-    it("update base URI");
+    it("update base URI", async () => {
+      await users[0].NFT.claim(0);
+      await users[0].GMsDerivative.mintWithGMsMaskNumber(3799);
+      expect(await contracts.GMsDerivative.tokenURI(0)).to.equal("https://example.com/3799");
 
-    it("can be called by only owner");
+      await deployer.GMsDerivative.updateBaseURI("https://example.com/updated/");
+
+      expect(await contracts.GMsDerivative.tokenURI(0)).to.equal("https://example.com/updated/3799");
+    });
+
+    it("can be called by only owner", async () => {
+      await expect(users[0].GMsDerivative.updateBaseURI("https://example.com/updated/")).to.be.revertedWith(
+        "Ownable: caller is not the owner",
+      );
+    });
   });
 });
