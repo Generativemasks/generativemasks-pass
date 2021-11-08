@@ -80,7 +80,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @notice Allow a GMs token holder to bulk mint tokens with id of their GMs tokens' id
      * @param maskNumbers numbers to be converted to token ids to be minted
      */
-    function multiMintWithGMsMaskNumbers(uint256[] calldata maskNumbers) public payable virtual nonReentrant {
+    function multiMintWithGMsMaskNumbers(uint256[] calldata maskNumbers) public payable virtual {
         multiMintWithGMsTokenIds(getTokenIdListFromMaskNumbers(maskNumbers));
     }
 
@@ -88,7 +88,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @notice Allow a GMs token holder to mint a token with one of their GMs token's id
      * @param maskNumber number to be converted to token id to be minted
      */
-    function mintWithGMsMaskNumber(uint256 maskNumber) public payable virtual nonReentrant {
+    function mintWithGMsMaskNumber(uint256 maskNumber) public payable virtual {
         mintWithGMsTokenId(getTokenIdFromMaskNumber(maskNumber));
     }
 
