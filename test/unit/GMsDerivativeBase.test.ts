@@ -126,8 +126,6 @@ describe("GMsDerivativeBase", function () {
         expect(await contracts.GMsDerivative.ownerOf(9999)).to.equal(users[0].address);
       });
 
-      it("claim all tokens");
-
       it("throws an error if msg.sender has no token", async () => {
         await expect(users[0].GMsDerivative.mintWithGMsTokenId(0)).to.be.revertedWith(
           "ERC721: owner query for nonexistent token",
@@ -138,6 +136,21 @@ describe("GMsDerivativeBase", function () {
         await users[0].NFT.claim(10000);
         await expect(users[0].GMsDerivative.mintWithGMsTokenId(10000)).to.be.revertedWith("GMsPass:INVALID_ID");
       });
+    });
+  });
+
+  describe("multiMintWithGMsMaskNumbers", () => {
+    it("can mint 32 tokens ", async () => {
+      const tokenIds: number[] = [];
+      await Promise.all(
+        [...Array(32)].map(async (_, i) => {
+          tokenIds.push(i + 3799);
+          return users[0].NFT.claim(i);
+        }),
+      );
+
+      await users[0].GMsDerivative.multiMintWithGMsMaskNumbers(tokenIds);
+      expect((await contracts.GMsDerivative.balanceOf(users[0].address)).toNumber()).to.equal(32);
     });
   });
 
