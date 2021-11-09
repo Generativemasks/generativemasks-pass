@@ -28,10 +28,10 @@ interface MockGMsPassInterface extends ethers.utils.Interface {
     "METADATA_INDEX()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "generativemasks()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
     "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
-    "gm()": FunctionFragment;
     "gmsHoldresMintsAvailable()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokenId()": FunctionFragment;
@@ -84,6 +84,10 @@ interface MockGMsPassInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "generativemasks",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
@@ -95,7 +99,6 @@ interface MockGMsPassInterface extends ethers.utils.Interface {
     functionFragment: "getTokenIdListFromMaskNumbers",
     values: [BigNumberish[]]
   ): string;
-  encodeFunctionData(functionFragment: "gm", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "gmsHoldresMintsAvailable",
     values?: undefined
@@ -216,6 +219,10 @@ interface MockGMsPassInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "generativemasks",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
@@ -227,7 +234,6 @@ interface MockGMsPassInterface extends ethers.utils.Interface {
     functionFragment: "getTokenIdListFromMaskNumbers",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "gm", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "gmsHoldresMintsAvailable",
     data: BytesLike
@@ -393,6 +399,8 @@ export class MockGMsPass extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    generativemasks(overrides?: CallOverrides): Promise<[string]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -407,8 +415,6 @@ export class MockGMsPass extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
-
-    gm(overrides?: CallOverrides): Promise<[string]>;
 
     gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -540,6 +546,8 @@ export class MockGMsPass extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  generativemasks(overrides?: CallOverrides): Promise<string>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -554,8 +562,6 @@ export class MockGMsPass extends BaseContract {
     maskNumbers: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
-
-  gm(overrides?: CallOverrides): Promise<string>;
 
   gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -681,6 +687,8 @@ export class MockGMsPass extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    generativemasks(overrides?: CallOverrides): Promise<string>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -695,8 +703,6 @@ export class MockGMsPass extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
-
-    gm(overrides?: CallOverrides): Promise<string>;
 
     gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -853,6 +859,8 @@ export class MockGMsPass extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    generativemasks(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -867,8 +875,6 @@ export class MockGMsPass extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    gm(overrides?: CallOverrides): Promise<BigNumber>;
 
     gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1006,6 +1012,8 @@ export class MockGMsPass extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    generativemasks(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1020,8 +1028,6 @@ export class MockGMsPass extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    gm(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     gmsHoldresMintsAvailable(
       overrides?: CallOverrides

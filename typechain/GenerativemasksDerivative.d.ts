@@ -29,10 +29,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "derivedFrom()": FunctionFragment;
+    "generativemasks()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
     "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
-    "gm()": FunctionFragment;
     "gmsHoldresMintsAvailable()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokenId()": FunctionFragment;
@@ -90,6 +90,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "generativemasks",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
@@ -101,7 +105,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     functionFragment: "getTokenIdListFromMaskNumbers",
     values: [BigNumberish[]]
   ): string;
-  encodeFunctionData(functionFragment: "gm", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "gmsHoldresMintsAvailable",
     values?: undefined
@@ -230,6 +233,10 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "generativemasks",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
@@ -241,7 +248,6 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     functionFragment: "getTokenIdListFromMaskNumbers",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "gm", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "gmsHoldresMintsAvailable",
     data: BytesLike
@@ -413,6 +419,8 @@ export class GenerativemasksDerivative extends BaseContract {
 
     derivedFrom(overrides?: CallOverrides): Promise<[string]>;
 
+    generativemasks(overrides?: CallOverrides): Promise<[string]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -427,8 +435,6 @@ export class GenerativemasksDerivative extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
-
-    gm(overrides?: CallOverrides): Promise<[string]>;
 
     gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -567,6 +573,8 @@ export class GenerativemasksDerivative extends BaseContract {
 
   derivedFrom(overrides?: CallOverrides): Promise<string>;
 
+  generativemasks(overrides?: CallOverrides): Promise<string>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -581,8 +589,6 @@ export class GenerativemasksDerivative extends BaseContract {
     maskNumbers: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
-
-  gm(overrides?: CallOverrides): Promise<string>;
 
   gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -715,6 +721,8 @@ export class GenerativemasksDerivative extends BaseContract {
 
     derivedFrom(overrides?: CallOverrides): Promise<string>;
 
+    generativemasks(overrides?: CallOverrides): Promise<string>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -729,8 +737,6 @@ export class GenerativemasksDerivative extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
-
-    gm(overrides?: CallOverrides): Promise<string>;
 
     gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -891,6 +897,8 @@ export class GenerativemasksDerivative extends BaseContract {
 
     derivedFrom(overrides?: CallOverrides): Promise<BigNumber>;
 
+    generativemasks(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -905,8 +913,6 @@ export class GenerativemasksDerivative extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    gm(overrides?: CallOverrides): Promise<BigNumber>;
 
     gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1051,6 +1057,8 @@ export class GenerativemasksDerivative extends BaseContract {
 
     derivedFrom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    generativemasks(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1065,8 +1073,6 @@ export class GenerativemasksDerivative extends BaseContract {
       maskNumbers: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    gm(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     gmsHoldresMintsAvailable(
       overrides?: CallOverrides

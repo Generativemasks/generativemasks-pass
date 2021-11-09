@@ -18,7 +18,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     uint256 public constant MAX_GMs_TOKEN_ID = 9999;
     uint256 public constant METADATA_INDEX = 3799;
 
-    IERC721 public immutable gm;
+    IERC721 public immutable generativemasks;
     bool public immutable onlyGMsHolders;
     uint16 public immutable reservedAllowance;
     uint16 public reserveMinted;
@@ -31,7 +31,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @notice Construct an GMsPassCore instance
      * @param name Name of the token
      * @param symbol Symbol of the token
-     * @param gm_ Address of your GMs instance (only for testing)
+     * @param generativemasks_ Address of your GMs instance (only for testing)
      * @param onlyGMsHolders_ True if only GMs tokens holders can mint this token
      * @param maxTotalSupply_ Maximum number of tokens that can ever be minted
      * @param reservedAllowance_ Number of tokens reserved for GMs token holders
@@ -41,7 +41,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
     constructor(
         string memory name,
         string memory symbol,
-        IERC721 gm_,
+        IERC721 generativemasks_,
         bool onlyGMsHolders_,
         uint256 maxTotalSupply_,
         uint16 reservedAllowance_,
@@ -51,8 +51,8 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         require(maxTotalSupply_ > 0, "GMsPass:INVALID_SUPPLY");
         require(!onlyGMsHolders_ || (onlyGMsHolders_ && maxTotalSupply_ <= GMS_SUPPLY_AMOUNT), "GMsPass:INVALID_SUPPLY");
         require(maxTotalSupply_ >= reservedAllowance_, "GMsPass:INVALID_ALLOWANCE");
-        // If restricted to gm token holders we limit max total supply
-        gm = gm_;
+        // If restricted to generativemasks token holders we limit max total supply
+        generativemasks = generativemasks_;
         onlyGMsHolders = onlyGMsHolders_;
         maxTotalSupply = maxTotalSupply_;
         reservedAllowance = reservedAllowance_;
@@ -109,7 +109,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         // To avoid wasting gas we want to check all preconditions beforehand
         for (uint256 i = 0; i < maxTokensToMint; i++) {
             require(tokenIds[i] <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_ID");
-            require(gm.ownerOf(tokenIds[i]) == msg.sender, "GMsPass:INVALID_OWNER");
+            require(generativemasks.ownerOf(tokenIds[i]) == msg.sender, "GMsPass:INVALID_OWNER");
         }
 
         // If reserved allowance is active we track mints count
@@ -133,7 +133,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
             "GMsPass:MAX_ALLOCATION_REACHED"
         );
         require(tokenId <= MAX_GMs_TOKEN_ID, "GMsPass:INVALID_ID");
-        require(gm.ownerOf(tokenId) == msg.sender, "GMsPass:INVALID_OWNER");
+        require(generativemasks.ownerOf(tokenId) == msg.sender, "GMsPass:INVALID_OWNER");
         require(msg.value == priceForGMsHoldersInWei, "GMsPass:INVALID_PRICE");
 
         // If reserved allowance is active we track mints count
@@ -154,7 +154,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
         require(!onlyGMsHolders, "GMsPass:OPEN_MINTING_DISABLED");
         require(openMintsAvailable() > 0, "GMsPass:MAX_ALLOCATION_REACHED");
         require(
-            (tokenId > MAX_GMs_TOKEN_ID && tokenId <= maxTokenId()) || gm.ownerOf(tokenId) == msg.sender,
+            (tokenId > MAX_GMs_TOKEN_ID && tokenId <= maxTokenId()) || generativemasks.ownerOf(tokenId) == msg.sender,
             "GMsPass:INVALID_ID"
         );
         require(msg.value == priceForOpenMintInWei, "GMsPass:INVALID_PRICE");
