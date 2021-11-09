@@ -4,7 +4,7 @@
 
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type { NPass, NPassInterface } from "../NPass";
+import type { GMsPass, GMsPassInterface } from "../GMsPass";
 
 const _abi = [
   {
@@ -103,6 +103,32 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "GMS_SUPPLY_AMOUNT",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "MAX_GMs_TOKEN_ID",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "MAX_MULTI_MINT_AMOUNT",
     outputs: [
       {
@@ -116,7 +142,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "MAX_N_TOKEN_ID",
+    name: "METADATA_INDEX",
     outputs: [
       {
         internalType: "uint256",
@@ -165,6 +191,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "generativemasks",
+    outputs: [
+      {
+        internalType: "contract IERC721",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -178,6 +217,57 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "maskNumber",
+        type: "uint256",
+      },
+    ],
+    name: "getTokenIdFromMaskNumber",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "maskNumbers",
+        type: "uint256[]",
+      },
+    ],
+    name: "getTokenIdListFromMaskNumbers",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "gmsHoldersMintsAvailable",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -250,11 +340,50 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "maskNumber",
+        type: "uint256",
+      },
+    ],
+    name: "mintWithGMsMaskNumber",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "tokenId",
         type: "uint256",
       },
     ],
-    name: "mintWithN",
+    name: "mintWithGMsTokenId",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "mintedCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "maskNumbers",
+        type: "uint256[]",
+      },
+    ],
+    name: "multiMintWithGMsMaskNumbers",
     outputs: [],
     stateMutability: "payable",
     type: "function",
@@ -267,35 +396,9 @@ const _abi = [
         type: "uint256[]",
       },
     ],
-    name: "multiMintWithN",
+    name: "multiMintWithGMsTokenIds",
     outputs: [],
     stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "n",
-    outputs: [
-      {
-        internalType: "contract IN",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "nHoldersMintsAvailable",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -313,7 +416,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "onlyNHolders",
+    name: "onlyGMsHolders",
     outputs: [
       {
         internalType: "bool",
@@ -371,7 +474,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "priceForNHoldersInWei",
+    name: "priceForGMsHoldersInWei",
     outputs: [
       {
         internalType: "uint256",
@@ -533,49 +636,6 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenOfOwnerByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
         name: "tokenId",
         type: "uint256",
       },
@@ -586,19 +646,6 @@ const _abi = [
         internalType: "string",
         name: "",
         type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -649,12 +696,15 @@ const _abi = [
   },
 ];
 
-export class NPass__factory {
+export class GMsPass__factory {
   static readonly abi = _abi;
-  static createInterface(): NPassInterface {
-    return new utils.Interface(_abi) as NPassInterface;
+  static createInterface(): GMsPassInterface {
+    return new utils.Interface(_abi) as GMsPassInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): NPass {
-    return new Contract(address, _abi, signerOrProvider) as NPass;
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): GMsPass {
+    return new Contract(address, _abi, signerOrProvider) as GMsPass;
   }
 }

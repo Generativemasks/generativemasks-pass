@@ -1,15 +1,16 @@
 import { deployments, getNamedAccounts, getUnnamedAccounts } from "hardhat";
-import { NPass } from "../../typechain";
-import { N } from "../../typechain/N";
+import { ERC721Mock, GenerativemasksDerivative, GMsDerivativeBase } from "../../typechain";
+import { GMsPass } from "../../typechain";
 import { ETH } from "../../utils/utils";
 import { setupUser, setupUsers } from "./users";
 
 export interface Contracts {
-  NDerivative: NPass;
-  NDerivativeRestricted: NPass;
-  NDerivativeWithAllowance: NPass;
-  NDerivativeWithPrice: NPass;
-  N: N;
+  NFT: ERC721Mock;
+  GMsDerivative: GMsDerivativeBase;
+  MockGMsDerivative: GMsPass;
+  MockGMsDerivativeRestricted: GMsPass;
+  MockGMsDerivativeWithAllowance: GMsPass;
+  MockGMsDerivativeWithPrice: GMsPass;
 }
 
 export interface User extends Contracts {
@@ -19,31 +20,68 @@ export interface User extends Contracts {
 export const setupIntegration = deployments.createFixture(async ({ ethers }) => {
   const { deployer } = await getNamedAccounts();
 
-  const nContractFactory = await ethers.getContractFactory("N");
-  const nContract = (await nContractFactory.deploy()) as N;
-  const nAddress = nContract.address;
+  const nftContractFactory = await ethers.getContractFactory("ERC721Mock");
+  const nftContract = (await nftContractFactory.deploy()) as ERC721Mock;
+  const nftAddress = nftContract.address;
 
-  const nPassFactory = await ethers.getContractFactory("MockNPass");
-  const nDerivative = (await nPassFactory.deploy("ND", "ND", nAddress, false, 8888, 0, 0, 0)) as NPass;
-  const nDerivativeRestricted = (await nPassFactory.deploy("NDR", "NDR", nAddress, true, 8888, 0, 0, 0)) as NPass;
-  const nDerivativeWithAllowance = (await nPassFactory.deploy("NDA", "NDA", nAddress, false, 10, 5, 0, 0)) as NPass;
-  const nDerivativeWithPrice = (await nPassFactory.deploy(
-    "ND",
-    "ND",
-    nAddress,
+  const GMsDerivativeFactory = await ethers.getContractFactory("GMsDerivativeBase");
+  const GMsDerivative = (await GMsDerivativeFactory.deploy(
+    "GMsD",
+    "GMsD",
+    "https://example.com/",
+    nftAddress,
+    nftAddress,
+  )) as GMsDerivativeBase;
+
+  const mockGMsPassFactory = await ethers.getContractFactory("MockGMsPass");
+  const mockGMsDerivative = (await mockGMsPassFactory.deploy(
+    "GMsD",
+    "GMsD",
+    nftAddress,
+    false,
+    8888,
+    0,
+    0,
+    0,
+  )) as GMsPass;
+  const mockGMsDerivativeRestricted = (await mockGMsPassFactory.deploy(
+    "GMsDR",
+    "GMsDR",
+    nftAddress,
+    true,
+    8888,
+    0,
+    0,
+    0,
+  )) as GMsPass;
+  const mockGMsDerivativeWithAllowance = (await mockGMsPassFactory.deploy(
+    "GMsDA",
+    "GMsDA",
+    nftAddress,
+    false,
+    10,
+    5,
+    0,
+    0,
+  )) as GMsPass;
+  const mockGMsDerivativeWithPrice = (await mockGMsPassFactory.deploy(
+    "GMsD",
+    "GMsD",
+    nftAddress,
     false,
     8888,
     0,
     ETH(1),
     ETH(5),
-  )) as NPass;
+  )) as GMsPass;
 
   const contracts: Contracts = {
-    NDerivative: nDerivative,
-    NDerivativeRestricted: nDerivativeRestricted,
-    NDerivativeWithAllowance: nDerivativeWithAllowance,
-    NDerivativeWithPrice: nDerivativeWithPrice,
-    N: nContract,
+    GMsDerivative,
+    MockGMsDerivative: mockGMsDerivative,
+    MockGMsDerivativeRestricted: mockGMsDerivativeRestricted,
+    MockGMsDerivativeWithAllowance: mockGMsDerivativeWithAllowance,
+    MockGMsDerivativeWithPrice: mockGMsDerivativeWithPrice,
+    NFT: nftContract,
   };
   const users: User[] = await setupUsers(await getUnnamedAccounts(), contracts);
 

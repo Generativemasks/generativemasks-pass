@@ -1,9 +1,9 @@
-# N Pass
+# Generativemasks Pass
 
 ## Intro
 
-This is a start pack to build NFTs using the NPass from the n project.
-It is thought to give you all the tools to build and deploy a "n" enabled NFT.
+This is a start pack to build NFTs using the GMsPass from the Generativemasks project.
+It is thought to give you all the tools to build and deploy a NFT derived from Generativemasks.
 Throughout the codebase there are `TODO` comments which help customise your code (use the find function to find them)
 
 ## Smart Contracts
@@ -13,17 +13,17 @@ Smart contract are written in Solidity and managed via hardhat.
 ### Steps
 
 1. `yarn install` (tested with yarn v1.22.11)
-1. Create a subcontract which derives from NPass.sol [example](contracts/testing/MockNPass.sol)
-   1. Decide if this only for n token holders. If yes, set the constructor argument `onlyNHolders` to true
+1. Create a subcontract which derives from GMsPass.sol [example](contracts/testing/MockNPass.sol)
+   1. Decide if this only for n token holders. If yes, set the constructor argument `onlyGMsHolders` to true
 1. Build you NFT custom logic/metadata
 1. Customise [deployment script](deploy/01_deploy_derivative.ts)
 1. Set up a .env file with the relevant variables [example](./.env.example)
 1. deploy running command `yarn hardhat --network mainnet deploy --gasprice "170000000000"`
 1. deploy etherscan verification `yarn hardhat --network mainnet etherscan-verify`
 
-## N Pass Configuration
+## Generativemasks Pass Configuration
 
-### onlyNHolders
+### onlyGMsHolders
 
 If set to true this will allow only token holders to mint. Based on other parameters this could mean either all n token holders
 have the right to mint or just a subset.
@@ -37,7 +37,7 @@ Maximum number of tokens that can ever be minted.
 Number of tokens reserved for n token holders. This can be less than the total number of n tokens (8888), in which case will
 enact a first come first serve mechanism for n token holders too.
 
-### priceForNHoldersInWei
+### priceForGMsHoldersInWei
 
 Price n token holders need to pay to mint.
 
