@@ -175,7 +175,7 @@ abstract contract GMsPassCore is ERC721, ReentrancyGuard, Ownable {
      * @notice Calculate the currently available number of reserved tokens for GMs token holders
      * @return Reserved mint available
      */
-    function gmsHoldresMintsAvailable() external view returns (uint256) {
+    function gmsHoldersMintsAvailable() external view returns (uint256) {
         return reservedAllowance - reserveMinted;
     }
 

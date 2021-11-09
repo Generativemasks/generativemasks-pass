@@ -33,7 +33,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getTokenIdFromMaskNumber(uint256)": FunctionFragment;
     "getTokenIdListFromMaskNumbers(uint256[])": FunctionFragment;
-    "gmsHoldresMintsAvailable()": FunctionFragment;
+    "gmsHoldersMintsAvailable()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokenId()": FunctionFragment;
     "maxTotalSupply()": FunctionFragment;
@@ -106,7 +106,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "gmsHoldresMintsAvailable",
+    functionFragment: "gmsHoldersMintsAvailable",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -249,7 +249,7 @@ interface GenerativemasksDerivativeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "gmsHoldresMintsAvailable",
+    functionFragment: "gmsHoldersMintsAvailable",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -436,7 +436,7 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
-    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
+    gmsHoldersMintsAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isApprovedForAll(
       owner: string,
@@ -590,7 +590,7 @@ export class GenerativemasksDerivative extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
-  gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+  gmsHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
   isApprovedForAll(
     owner: string,
@@ -738,7 +738,7 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
-    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+    gmsHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -914,7 +914,7 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    gmsHoldresMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+    gmsHoldersMintsAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -1074,7 +1074,7 @@ export class GenerativemasksDerivative extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    gmsHoldresMintsAvailable(
+    gmsHoldersMintsAvailable(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

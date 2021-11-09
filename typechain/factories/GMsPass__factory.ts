@@ -262,7 +262,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "gmsHoldresMintsAvailable",
+    name: "gmsHoldersMintsAvailable",
     outputs: [
       {
         internalType: "uint256",
