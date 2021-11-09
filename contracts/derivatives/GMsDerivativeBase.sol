@@ -4,6 +4,13 @@ pragma solidity =0.8.6;
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "../core/GMsPassCore.sol";
 
+/**
+ * @title GMsDerivativeBase contract
+ * @author wildmouse
+ * @notice This contract provides basic functionalities to allow minting using the GMsPassCore
+ * @dev This is hardcoded to the minting condition to deploy derivative NFTs only for Generativemasks holders without claim fees.
+ *      This SHOULD be derived by another contract and used for mainnet deployments
+ */
 contract GMsDerivativeBase is GMsPassCore {
 
     using Strings for uint256;
@@ -11,6 +18,14 @@ contract GMsDerivativeBase is GMsPassCore {
     address public derivedFrom;
     string private __baseURI;
 
+    /**
+     * @notice Construct an GMsDerivativeBase instance
+     * @param name Name of the token
+     * @param symbol Symbol of the token
+     * @param baseURI URL of metadata JSON. Token id will be added for each token id on tokenURL()
+     * @param generativemasks Generativemasks address. This argument should hardcoded by derived contract.
+     * @param _derivedFrom NFT contract address of the derivation source
+     */
     constructor(
         string memory name,
         string memory symbol,
